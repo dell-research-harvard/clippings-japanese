@@ -1,1 +1,1 @@
-# visual_record_linkage
+# The japanese variant of CLIPPINGS based on japanese CLIP 
