@@ -26,10 +26,9 @@ INV_NORMALIZE = T.Normalize(
 
 
 
-
-
-
 class MedianPad:
+    """This padding preserves the aspect ratio of the image. It also pads the image with the median value of the border pixels. 
+    Note how it also centres the ROI in the padded image."""
 
     def __init__(self, override=None):
 
@@ -58,7 +57,7 @@ class MedianPad:
 
 
 
-
+####The base transform for the training / inference of ViT
 BASE_TRANSFORM = T.Compose([
         MedianPad(override=(255,255,255)),
         T.ToTensor(),
@@ -66,6 +65,16 @@ BASE_TRANSFORM = T.Compose([
         T.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD)
 ])
 
+###The base transform for the training / inference of clip-based models
+CLIP_BASE_TRANSFORM = T.Compose([  
+         MedianPad(override=(255,255,255)),
+        T.ToTensor(),
+        T.Resize((224, 224)),
+        T.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711),)
+    ])
+
+
+###ADditonal transforms for the training of ViT
 NO_PAD_NO_RESIZE_TRANSFORM = T.Compose([
     ##To rgb
         T.Lambda(lambda x: x.convert("RGB") if isinstance(x, Image.Image) else x),
@@ -82,65 +91,41 @@ EMPTY_TRANSFORM = T.Compose([
         T.ToTensor()
 ])
 
-
 PAD_RESIZE_TRANSFORM = T.Compose([
         MedianPad(override=(255,255,255)),
         T.ToTensor(),
         T.Resize((224, 224))
 ])
 
-
-AUG_NORMALIZE = T.Compose([gss.random_image_transform(), T.ToTensor(),
+AUG_NORMALIZE = T.Compose([gss.get_render_transform(), T.ToTensor(),
  T.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD)])
 
+RANDOM_TRANS_PAD_RESIZE= T.Compose([gss.get_render_transform(), PAD_RESIZE_TRANSFORM])
 
-RANDOM_TRANS_PAD_RESIZE= T.Compose([gss.random_image_transform(), PAD_RESIZE_TRANSFORM])
+###Some transforms that apply a wide range of data augmentation from the albumentations and torchvision libraries. 
+
 
 def create_random_doc_transform(size=224):
-    return T.Compose([  gss.random_image_transform(), BASE_TRANSFORM])
-
-
-def create_clip_random_doc_transform(size=224):
-    return T.Compose([  gss.random_image_transform(), CLIP_BASE_TRANSFORM])
-
+    return T.Compose([  gss.get_render_transform(), BASE_TRANSFORM])
 
 def create_random_no_aug_doc_transform(size=224):
     return T.Compose([  gss.get_render_transform(), BASE_TRANSFORM])
     
 def create_random_doc_transform_no_resize():
-    return T.Compose([  gss.random_image_transform(), NO_PAD_NO_RESIZE_TRANSFORM])
+    return T.Compose([  gss.get_render_transform(), NO_PAD_NO_RESIZE_TRANSFORM])
 
-CLIP_BASE_TRANSFORM = T.Compose([  
-         MedianPad(override=(255,255,255)),
-        T.ToTensor(),
-        T.Resize((224, 224)),
-        T.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711),)
-    ])
+
+####The augmentations appended with the CLIP base transform - for the training of CLIP-based models with data
+def create_clip_random_doc_transform(size=224):
+    return T.Compose([  gss.get_render_transform(), CLIP_BASE_TRANSFORM])
+
+
+
 ##Run as script
 if __name__ == "__main__":
 
 
-    ##Test transform on image
-    # img_path = "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan/images/67_24161_25940_32160_22808_19991_36893_21890_31105_34597_35595_27137_33531_31796_31013_26057/komorebi-gothic-font-67_24161_25940_32160_22808_19991_36893_21890_31105_34597_35595_27137_33531_31796_31013_26057-ori-H.png"
-    # img = Image.open(img_path)
-
-    # img_base = BASE_TRANSFORM(img)
-    # img_no_pad_base= NO_PAD_BASE_TRANSFORM(img)
-    # img_not_norm = gss.random_image_transform()(img)
-    # img_random = create_random_doc_transform()(img)
-    
-    # ##Convert tensor to image
-    # img_base = T.ToPILImage()(img_base)
-    # img_random = T.ToPILImage()(img_random)
-    # img_no_pad_base = T.ToPILImage()(img_no_pad_base)
-    # # img_not_norm = T.ToPILImage()(img_not_norm)
-    # ##save images
-    # img_base.save("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan/base_1.png")
-    # img_random.save("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan/random_1.png")
-    # img_not_norm.save("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan/not_norm_1.png")
-    # img_no_pad_base.save("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan/no_pad_base_1.png")
-
-    ###Test transforms on all images to find error
+    ###Test the output of the transforms!
     save_dir= "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_japan_centered_3000/trans_images"
 
     if not os.path.exists(save_dir):

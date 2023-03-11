@@ -6,24 +6,16 @@ from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 import random
-import pandas as pd 
-import json
 from tqdm import tqdm
 from glob import glob
-import cv2
 import torch
-##Import augraphy
-from augraphy import *
-
-from multiprocessing import Pool
-from functools import partial
-import utils.custom_augraphy as ca
 
 
 
-#######Image rendering functions
 
 
+####Some functions and transforms for augmenting images
+####The augraphy package is also supported - but never used for training
 
 
 #####Image transform functions
@@ -75,40 +67,6 @@ def create_render_transform(high_blur,affine_degrees,translate,scale,contrast,br
 
 
 
-##Add Augraphy transforms
-
-def random_augraphy_transform_im(img,custom_pipeline=True):
-    ##Convert PIL to numpy array
-    img = np.array(img)
-
-    ##if image is horizontal, use horizontal pipeline
-    if custom_pipeline:
-        if img.shape[1] > img.shape[0]:
-            pipeline = ca.pipeline_v
-        else:
-            pipeline = ca.pipeline_h
-    else:
-        pipeline = default_augraphy_pipeline()
-    img = pipeline.augment(img)["output"]
-    ###Numpy to PIL
-    img = Image.fromarray(img)
-    return img
-
-class augraphy_transform(object):
-    def __init__(self,size=224):
-        self.size=224
-    def __call__(self, img):
-        aug_image= random_augraphy_transform_im(img)
-
-        ##IF image is valid, return it, otherwise, re-augment
-        if aug_image is not None:
-            return aug_image
-        else:
-            return self.__call__(img) 
-    # def __repr__(self):
-    #     return self.__class__.__name__+'()'
-
-
 ###Tuples - scale,translate, all params are between 0,1 , translate has to have second number greater than 1st
 ###Randomly draw params and save them to a dict
 def get_render_transform_params():
@@ -132,28 +90,6 @@ def get_render_transform():
     return create_render_transform(**params)
 
 
-
-def transform_image(tv=False,au=False):
-    print(tv,au)
-    if tv:
-        chosen_transform = get_render_transform()
-    if au==True and tv==True:
-        chosen_transform =  T.Compose([chosen_transform,augraphy_transform(size=224)]) 
-    if au==True and tv==False:
-        chosen_transform =  augraphy_transform(size=224)
-    return chosen_transform
-
-def random_choice_transforms():
-    tv,au = random.choice([(True,False)])
-  
-    return {"tv":tv,"au":au}
-
-def random_image_transform():
-    transform_params = random_choice_transforms()
-    transform = transform_image(tv=transform_params["tv"],au=transform_params["au"])
-    return transform
-
-
 def create_synthetic_images(im_subfolder_path,save_dir,image_count):
     image_path_list = glob(im_subfolder_path+"/*.png")
     for i in range(len(image_path_list)):
@@ -168,8 +104,8 @@ def create_synthetic_images(im_subfolder_path,save_dir,image_count):
             os.makedirs(folder_path)
         
         for j in tqdm(range(image_count)):
-            transforms = random_choice_transforms()
-            img = transform_image(img,tv=transforms["tv"],au=transforms["au"],au_seed=transforms["au_seed"])
+            transforms = get_render_transform()
+            img = transforms(img)
             img.save(os.path.join(folder_path,"transform_" + str(j)+img_name))
 
 
@@ -195,11 +131,6 @@ if __name__ == "__main__":
 
     create_synthetic_images(subfolder_list[0],noisy_dir,20)
         
-
-
-
-
-    ###Render images in the path
 
 
         
