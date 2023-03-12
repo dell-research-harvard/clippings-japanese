@@ -342,8 +342,6 @@ if __name__ == "__main__":
         help="Path to text file of mined hard negatives")
     parser.add_argument("--checkpoint", type=str, default=None,
         help="Load checkpoint before training")
-    parser.add_argument("--lang", type=str, default="jp", choices=["jp", "en"],
-        help="Language of characters being recognized")
     parser.add_argument('--finetune', action='store_true', default=False,
         help="Train just on target character crops")
     parser.add_argument('--pretrain', action='store_true', default=False,
