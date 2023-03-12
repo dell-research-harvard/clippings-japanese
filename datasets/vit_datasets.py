@@ -9,7 +9,7 @@ import math
 import json
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 
-from datasets.recognizer_samplers import *
+from datasets.vit_samplers import *
 from utils.datasets_utils import *
 import re
 from tqdm import tqdm
@@ -126,8 +126,6 @@ def create_dataset(
         batch_size,
         hardmined_txt=None, 
         m=4,
-        finetune=False,
-        pretrain=False,
         high_blur=False,
         knn=True,
         diff_sizes=False,
@@ -140,12 +138,7 @@ def create_dataset(
         unlabeled_dir=None
     ):
 
-    if finetune and pretrain:
-        raise NotImplementedError
-    if finetune:
-        print("Finetuning mode!")
-    if pretrain:
-        print("Pretraining model!")
+
 
     if resize:
         dataset = WordImageFolder(
@@ -179,6 +172,7 @@ def create_dataset(
     ###
     print("Creating train-test-val splits and checking the splits...")
     if renders:
+        print("Using renders")
         paired_train_idx = [idx for idx, (p, t) in tqdm(enumerate(dataset.data)) if \
             any(f'-font-{imf}-ori-' in  os.path.basename(p) for imf in train_stems)]
         paired_val_idx = [idx for idx, (p, t) in tqdm(enumerate(dataset.data)) if \
@@ -201,28 +195,17 @@ def create_dataset(
     assert len(set(paired_test_idx).intersection(set(paired_train_idx))) == 0 
     print(f"train len: {len(paired_train_idx)}\nval len: {len(paired_val_idx)}\ntest len: {len(paired_test_idx)}")
     
-    if finetune:
-        idx_train = sorted(paired_train_idx)
-    elif pretrain:
-        idx_train = sorted(paired_train_idx)
-    else:
-        idx_train = sorted(paired_train_idx)
+
+    idx_train = sorted(paired_train_idx)
     idx_val = sorted(paired_val_idx)
     idx_test = sorted(paired_test_idx)
 
-    if finetune:
-        assert len(idx_train) + len(idx_val)  + len(idx_test) == \
-            len(dataset), f"{len(idx_train)} + {len(idx_val)} + {len(idx_test)} != {len(dataset)}"
-    elif pretrain:
-        assert len(idx_train) + len(idx_val)  + len(idx_test) == \
+    if test_ann_path != val_ann_path:
+        assert len(idx_train) + len(idx_val) + len(idx_test) == \
             len(dataset), f"{len(idx_train)} + {len(idx_val)} + {len(idx_test)} != {len(dataset)}"
     else:
-        if test_ann_path != val_ann_path:
-            assert len(idx_train) + len(idx_val) + len(idx_test) == \
-                len(dataset), f"{len(idx_train)} + {len(idx_val)} + {len(idx_test)} != {len(dataset)}"
-        else:
-            assert len(idx_train) + len(idx_val) == \
-                len(dataset), f"{len(idx_train)} + {len(idx_val)} != {len(dataset)}"        
+        assert len(idx_train) + len(idx_val) == \
+            len(dataset), f"{len(idx_train)} + {len(idx_val)} != {len(dataset)}"        
 
     train_dataset = CustomSubset(dataset, idx_train)
     val_dataset = CustomSubset(dataset, idx_val)

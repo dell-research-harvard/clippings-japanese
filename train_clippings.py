@@ -17,7 +17,7 @@ from pytorch_metric_learning import losses
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, ReduceLROnPlateau, CosineAnnealingLR, StepLR
 from torch import nn
 import wandb
-import data_loaders
+import datasets.clippings_data_loaders as data_loaders
 import models.encoders as encoders
 
 
@@ -795,11 +795,10 @@ if __name__ == "__main__":
                 if args.pooling_type=="mlp":
                     torch.save(mlp_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("mlp_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
                 print("Model saved at epoch {}".format(epoch))
-                if acc>0.99:
                     ###Look at final acc on tk
-                    final_acc=tester_bienc_clip(test_loader,small_ref_loader,clip_model,mlp_model,split="test",log=True)
+        final_acc=tester_bienc_clip(test_loader,small_ref_loader,clip_model,mlp_model,split="test",log=True)
             ###SAve at every epoch
-            torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
+            # torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
     
     elif args.training_type=="train_bienc" and args.train_data_type!="labelled":
         best_acc=tester_bienc_clip(val_loader,synth_ref_dataloader,clip_model,mlp_model,split="val_small",log=True)
@@ -815,11 +814,10 @@ if __name__ == "__main__":
                 if args.pooling_type=="mlp":
                     torch.save(mlp_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("mlp_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
                 print("Model saved at epoch {}".format(epoch))
-                if acc>0.99:
-                    ###Look at final acc on tk
-                    final_acc=tester_bienc_clip(test_loader,all_tk_ref_loader,clip_model,mlp_model,split="test",log=True)
+                ###Look at final acc on tk
+        final_acc=tester_bienc_clip(test_loader,all_tk_ref_loader,clip_model,mlp_model,split="test",log=True)
             ###SAve at every epoch
-            torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
+            # torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
     
     else :
         print("Training type not recognised")

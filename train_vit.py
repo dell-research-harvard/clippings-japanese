@@ -342,10 +342,6 @@ if __name__ == "__main__":
         help="Path to text file of mined hard negatives")
     parser.add_argument("--checkpoint", type=str, default=None,
         help="Load checkpoint before training")
-    parser.add_argument('--finetune', action='store_true', default=False,
-        help="Train just on target character crops")
-    parser.add_argument('--pretrain', action='store_true', default=False,
-        help="Train just on render character crops")
     parser.add_argument('--high_blur', action='store_true', default=False,
         help="Increase intensity of the blurring data augmentation for renders")
     parser.add_argument('--diff_sizes', action='store_true', default=False,
@@ -366,6 +362,8 @@ if __name__ == "__main__":
         help="Resize the image for encoder")
     parser.add_argument('--trans_epoch',action='store_true',default=False,
         help="Transform data from train loader on every epoch to vary the images slightly")
+    parser.add_argument('--use_renders',action='store_true',default=False,help="Use text renders for pre-training")
+    parser.add_argument('--train_images_dir',type=str,default=None,help="Path to train images. This is used to make a reference set for calculating the accuracy of the model")
     
     args = parser.parse_args()
 
@@ -438,15 +436,13 @@ if __name__ == "__main__":
                 args.batch_size,
                 hardmined_txt=args.hns_txt_path, 
                 m=args.m,
-                finetune=args.finetune,
-                pretrain=args.pretrain,
                 high_blur=args.high_blur,
                 knn=True,
                 diff_sizes=args.diff_sizes,
                 imsize=args.imsize,
                 num_passes=args.num_passes,
                 resize=args.resize,
-                renders=False,
+                renders=args.use_renders,
                 trans_epoch=args.trans_epoch
             )
        
@@ -456,16 +452,9 @@ if __name__ == "__main__":
             args.root_dir_path
         )
 
-        # render_dataset_tk=create_render_dataset_only_tk(args.root_dir_path,"tk")
-        # print(list(enumerate(render_dataset_tk.data)))
 
-        train_image_folder=args.root_dir_path.split("/")[:-2]
-        train_image_folder="/".join(train_image_folder)
-        train_image_folder=train_image_folder+"/splits/train_images"
-        # train_image_folder='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_label_df/splits/train_images'
-        
         render_dataset_training = create_render_dataset(
-            train_image_folder
+            args.train_images_dir
         )
 
         
@@ -509,19 +498,18 @@ if __name__ == "__main__":
                 trainer(enc, loss_func, device, train_loader, optimizer, epoch, args.epoch_viz_dir, args.diff_sizes,scheduler=scheduler)
             
         
-            if epoch > 10:
-                acc = tester(val_dataset, render_dataset, enc, "val")
-                if acc >= best_acc:
-                    best_acc = acc
-                    save_model(args.run_name, enc, f"best_{get_last_digit(args.alpha)}", datapara)
-                    print("Best model saved")
+            acc = tester(val_dataset, render_dataset, enc, "val")
+            if acc >= best_acc:
+                best_acc = acc
+                save_model(args.run_name, enc, f"best", datapara)
+                print("Best model saved")
 
                 
 
            
 
         ##Del enc/ Save index
-        best_enc = encoder.load(os.path.join(args.run_name, f"enc_best_{get_last_digit(args.alpha)}.pth"))
+        best_enc = encoder.load(os.path.join(args.run_name, f"enc_best.pth"))
             
   
             # optionally test at end...
@@ -541,7 +529,7 @@ if __name__ == "__main__":
         if args.hns_txt_path is None:
             print("Infering hard negatives...")
             if not args.infer_hardneg_k is None:
-                query_paths = glob.glob(train_image_folder+"/*/*")
+                query_paths = glob.glob(args.train_images_dir+"/*/*")
                 print(f"Num hard neg paths: {len(query_paths)}")
                 transform = BASE_TRANSFORM
                 infer_hardneg(query_paths, render_dataset_training, best_enc, 
@@ -550,33 +538,7 @@ if __name__ == "__main__":
                     k=args.infer_hardneg_k,render=False)  ##Keep render=True for using synthetic data for training. 
 
 
-    # sweep_configuration = {
-    # 'method': 'random',
-    # 'name': 'sweep',
-    # 'early_terminate': {'type': 'hyperband', 'min_iter': 1},
-    # 'metric': {'goal': 'maximize', 'name': 'val/accuracy'},
-    # 'parameters': 
-    # {   
-    #     'num_epochs': {'values': [200]},
-    #     'lr': {'values': [0.000002]},
-    #     'weight_decay': {'values': [0.1]},
-    #     'temp': {'values': [0.09]},
-    #     # 'temp': {'values': [0.09]},
-    #     'm':{ 'values': [3]},
-    #     'batch_size': {'values': [252]},
-    #     'lambda_reg': {'values': [0]},
-    #     'temp_nce': {'values': [0.115]},
-    #     'alpha': {'values': [None]},
-    #     'momentum': {'values': [0.9]},
-    #     'margin': {'values': [0.05]},
-    #     'num_passes': {'values': [1]},
-    #  }
-    # }
 
-
-    # sweep_id = wandb.sweep(sweep_configuration, project="visual_record_linkage")
-
-    # wandb.agent(sweep_id, function=main, count=1)
     main()
 
 
