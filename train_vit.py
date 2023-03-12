@@ -437,16 +437,16 @@ if __name__ == "__main__":
                 args.train_ann_path,
                 args.val_ann_path, 
                 args.test_ann_path, 
-                wandb.config.batch_size,
+                args.batch_size,
                 hardmined_txt=args.hns_txt_path, 
-                m=wandb.config.m,
+                m=args.m,
                 finetune=args.finetune,
                 pretrain=args.pretrain,
                 high_blur=args.high_blur,
                 knn=True,
                 diff_sizes=args.diff_sizes,
                 imsize=args.imsize,
-                num_passes=wandb.config.num_passes,
+                num_passes=args.num_passes,
                 resize=args.resize,
                 renders=False,
                 trans_epoch=args.trans_epoch
@@ -495,31 +495,27 @@ if __name__ == "__main__":
 
         
 
-        optimizer = AdamW(enc.parameters(), lr=wandb.config.lr, weight_decay=wandb.config.weight_decay)
+        optimizer = AdamW(enc.parameters(), lr=args.lr, weight_decay=args.weight_decay)
         scheduler = CosineAnnealingWarmRestarts(optimizer, 1, 2)
-        loss_func=losses.SupConLoss(temperature = wandb.config.temp) 
-        loss_func_supcon = losses.SupConLoss(temperature = wandb.config.temp) 
-        loss_func_infonce=losses.NTXentLoss(temperature = wandb.config.temp_nce) 
-
+        loss_func=losses.SupConLoss(temperature = args.temp) 
 
         if not args.epoch_viz_dir is None: os.makedirs(args.epoch_viz_dir, exist_ok=True)
-        for epoch in range(args.start_epoch, wandb.config.num_epochs+args.start_epoch):
+        for epoch in range(args.start_epoch, args.num_epochs+args.start_epoch):
             print("Training epoch", epoch)
             if args.trans_epoch:
             ##Transform trainloader images using the transform - create_random_doc_transform()
                 print("Re-transforming images before training")
                 train_loader_transformed=TransformLoader(train_loader,  AUG_NORMALIZE)
-                trainer(enc, loss_func, device, train_loader_transformed, optimizer, epoch, args.epoch_viz_dir, args.diff_sizes,scheduler=scheduler,regularization=regularization,lambda_reg=wandb.config.lambda_reg,alpha=wandb.config.alpha,loss_func_supcon=loss_func_supcon,loss_func_infonce=loss_func_infonce)
-
+                trainer(enc, loss_func, device, train_loader_transformed, optimizer, epoch, args.epoch_viz_dir, args.diff_sizes,scheduler=scheduler)
             else:
-                trainer(enc, loss_func, device, train_loader, optimizer, epoch, args.epoch_viz_dir, args.diff_sizes,scheduler=scheduler,regularization=regularization,lambda_reg=wandb.config.lambda_reg,alpha=wandb.config.alpha,loss_func_supcon=loss_func_supcon,loss_func_infonce=loss_func_infonce)
+                trainer(enc, loss_func, device, train_loader, optimizer, epoch, args.epoch_viz_dir, args.diff_sizes,scheduler=scheduler)
             
         
             if epoch > 10:
                 acc = tester(val_dataset, render_dataset, enc, "val")
                 if acc >= best_acc:
                     best_acc = acc
-                    save_model(args.run_name, enc, f"best_{get_last_digit(wandb.config.alpha)}", datapara)
+                    save_model(args.run_name, enc, f"best_{get_last_digit(args.alpha)}", datapara)
                     print("Best model saved")
 
                 
@@ -527,7 +523,7 @@ if __name__ == "__main__":
            
 
         ##Del enc/ Save index
-        best_enc = encoder.load(os.path.join(args.run_name, f"enc_best_{get_last_digit(wandb.config.alpha)}.pth"))
+        best_enc = encoder.load(os.path.join(args.run_name, f"enc_best_{get_last_digit(args.alpha)}.pth"))
             
   
             # optionally test at end...
@@ -556,34 +552,34 @@ if __name__ == "__main__":
                     k=args.infer_hardneg_k,render=False)  ##Keep render=True for using synthetic data for training. 
 
 
-    sweep_configuration = {
-    'method': 'random',
-    'name': 'sweep',
-    'early_terminate': {'type': 'hyperband', 'min_iter': 1},
-    'metric': {'goal': 'maximize', 'name': 'val/accuracy'},
-    'parameters': 
-    {   
-        'num_epochs': {'values': [200]},
-        'lr': {'values': [0.000002]},
-        'weight_decay': {'values': [0.1]},
-        'temp': {'values': [0.09]},
-        # 'temp': {'values': [0.09]},
-        'm':{ 'values': [3]},
-        'batch_size': {'values': [252]},
-        'lambda_reg': {'values': [0]},
-        'temp_nce': {'values': [0.115]},
-        'alpha': {'values': [None]},
-        'momentum': {'values': [0.9]},
-        'margin': {'values': [0.05]},
-        'num_passes': {'values': [1]},
-     }
-    }
+    # sweep_configuration = {
+    # 'method': 'random',
+    # 'name': 'sweep',
+    # 'early_terminate': {'type': 'hyperband', 'min_iter': 1},
+    # 'metric': {'goal': 'maximize', 'name': 'val/accuracy'},
+    # 'parameters': 
+    # {   
+    #     'num_epochs': {'values': [200]},
+    #     'lr': {'values': [0.000002]},
+    #     'weight_decay': {'values': [0.1]},
+    #     'temp': {'values': [0.09]},
+    #     # 'temp': {'values': [0.09]},
+    #     'm':{ 'values': [3]},
+    #     'batch_size': {'values': [252]},
+    #     'lambda_reg': {'values': [0]},
+    #     'temp_nce': {'values': [0.115]},
+    #     'alpha': {'values': [None]},
+    #     'momentum': {'values': [0.9]},
+    #     'margin': {'values': [0.05]},
+    #     'num_passes': {'values': [1]},
+    #  }
+    # }
 
 
-    sweep_id = wandb.sweep(sweep_configuration, project="visual_record_linkage")
+    # sweep_id = wandb.sweep(sweep_configuration, project="visual_record_linkage")
 
-    wandb.agent(sweep_id, function=main, count=1)
-    # main()
+    # wandb.agent(sweep_id, function=main, count=1)
+    main()
 
 
     
