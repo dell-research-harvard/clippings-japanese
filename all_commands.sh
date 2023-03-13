@@ -43,7 +43,7 @@ CUDA_VISIBLE_DEVICES=2 python clippings-japanese/train_clippings.py --clip_lr 5e
 ##Try higher weight decay, lower lr
 
 
-##############Mean pooling - 
+##############Mean pooling - no lang-image pretraining
 
 ###Pretrain biclip using synthetic data. Offline mining first
 CUDA_VISIBLE_DEVICES=1 python clippings-japanese/train_clippings.py --clip_lr 5e-6 --train_data_type synth --wandb_name bienc_clip_nopretrain_synth_m3_v3_hardneg --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.1 --train_hardneg
@@ -51,7 +51,7 @@ CUDA_VISIBLE_DEVICES=1 python clippings-japanese/train_clippings.py --clip_lr 5e
 
 
 ##norm after average
-CUDA_VISIBLE_DEVICES=2 python clippings-japanese/train_clippings.py --clip_lr 5e-7 --train_data_type labelled --wandb_name bienc_clip_nopretrain_labelled_m3_v3_hardneg_norm --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.05 --train_hardneg 
+CUDA_VISIBLE_DEVICES=2 python clippings-japanese/train_clippings.py --clip_lr 5e-7 --train_data_type labelled --wandb_name bienc_clip_nopretrain_labelled_m3_v3_hardneg_norm --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.05 --train_hardneg --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/bienc_clip_nopretrain_synth_m3_v3_hardneg.pt"
 ##Try higher weight decay, lower lr
 
 
