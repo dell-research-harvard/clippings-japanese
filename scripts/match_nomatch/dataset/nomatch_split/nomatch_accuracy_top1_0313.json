@@ -1,0 +1,92 @@
+{
+    "selfsup_text_effocr_partner_tk_match.csv": [
+        0.8579421681074955,
+        0.6636636636636637,
+        0.75
+    ],
+    "top1_bm_df_all_data_formatted_only_synth.csv": [
+        0.9448510860076933,
+        0.32432432432432434,
+        0.35
+    ],
+    "top1_bm_df_all_data_formatted_vit.csv": [
+        0.8780429941322403,
+        0.7837837837837838,
+        0.8147058823529412
+    ],
+    "df_full_matched_eff_2_efftk_lev.csv": [
+        1.7940949051275723,
+        0.6066066066066066,
+        0.6176470588235294
+    ],
+    "mean_norm_1_effocr_partner_tk_match.csv": [
+        0.8429916621181999,
+        0.7747747747747747,
+        0.8441176470588235
+    ],
+    "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv": [
+        0.8405519453418941,
+        0.5735735735735735,
+        0.6705882352941176
+    ],
+    "sup_img_effocr_partner_tk_match.csv": [
+        0.685322424443437,
+        0.6486486486486487,
+        0.7294117647058823
+    ],
+    "df_full_matched_gcv_2_gcvtk_lev.csv": [
+        0.17426586934030386,
+        0.5555555555555556,
+        0.6264705882352941
+    ],
+    "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv": [
+        0.8708294204951663,
+        0.5405405405405406,
+        0.6264705882352941
+    ],
+    "df_full_matched_eff_2_efftk_simstring_jac.csv": [
+        0.3080523186581692,
+        0.5735735735735735,
+        0.6352941176470588
+    ],
+    "mean_norm_1_gcv_partner_tk_match.csv": [
+        0.7833681958532166,
+        0.7537537537537538,
+        0.8470588235294118
+    ],
+    "df_full_matched_gcv_2_gcvtk_simstring_jac.csv": [
+        0.47597337149708174,
+        0.6126126126126126,
+        0.7205882352941176
+    ],
+    "sup_text_effocr_partner_tk_match.csv": [
+        0.8320060338616715,
+        0.7837837837837838,
+        0.8147058823529412
+    ],
+    "selfsup_text_gcv_partner_tk_match.csv": [
+        0.8724312967400207,
+        0.6396396396396397,
+        0.7029411764705882
+    ],
+    "selfsup_mean_effocr_partner_tk_match.csv": [
+        0.8244342906114968,
+        0.6966966966966966,
+        0.7823529411764706
+    ],
+    "selfsup_img_effocr_partner_tk_match.csv": [
+        0.7624225088107952,
+        0.6336336336336337,
+        0.6970588235294117
+    ],
+    "selfsup_mean_gcv_partner_tk_match.csv": [
+        0.8228765149758628,
+        0.7087087087087087,
+        0.7970588235294118
+    ],
+    "sup_text_gcv_partner_tk_match.csv": [
+        0.9138184691367846,
+        0.6576576576576577,
+        0.7147058823529412
+    ]
+}
