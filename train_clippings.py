@@ -772,6 +772,7 @@ if __name__ == "__main__":
 
 
     elif args.training_type=="train_bienc" and args.train_data_type=="labelled":
+        best_acc=tester_bienc_clip(val_loader,huge_ref_loader,clip_model,mlp_model,split="val_large",log=True)
         loss_func=losses.SupConLoss(temperature=args.supcon_temp)
         for epoch in (range(args.start_epoch, args.num_epochs+args.start_epoch)):
             if epoch<= args.freeze_clip_epochs:

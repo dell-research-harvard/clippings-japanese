@@ -10,7 +10,7 @@ import japanese_clip as ja_clip
 import pandas as pd
 import numpy as npf
 from utils.datasets_utils import *
-import data_loaders 
+import datasets.clippings_data_loaders as data_loaders
 from tqdm import tqdm
 import json
 import faiss

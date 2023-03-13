@@ -38,12 +38,20 @@ python clippings-japanese/train_clippings.py --clip_lr 5e-5 --train_data_type sy
 CUDA_VISIBLE_DEVICES=1 python clippings-japanese/train_clippings.py --clip_lr 5e-6 --train_data_type synth --wandb_name bienc_clip_pretrain_synth_m3_v3_hardneg --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.1 --train_hardneg --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt"
 
 
-###Fine-tune biclip using labelled data. Offline mining first
-CUDA_VISIBLE_DEVICES=3 python clippings-japanese/train_clippings.py --clip_lr 5e-6 --train_data_type labelled --wandb_name bienc_clip_pretrain_labelled_m3_v3_hardneg --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.1 --train_hardneg --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/bienc_clip_pretrain_synth_m3_v3_hardneg.pt"
+##norm after average
+CUDA_VISIBLE_DEVICES=2 python clippings-japanese/train_clippings.py --clip_lr 5e-7 --clip_weight_decay 0.05 --train_data_type labelled --wandb_name bienc_clip_pretrain_labelled_m3_v3_hardneg_norm --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.05 --train_hardneg --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/bienc_clip_pretrain_synth_m3_v3_hardneg.pt" 
+##Try higher weight decay, lower lr
+
+
+##############Mean pooling - 
+
+###Pretrain biclip using synthetic data. Offline mining first
+CUDA_VISIBLE_DEVICES=1 python clippings-japanese/train_clippings.py --clip_lr 5e-6 --train_data_type synth --wandb_name bienc_clip_nopretrain_synth_m3_v3_hardneg --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.1 --train_hardneg
+
 
 
 ##norm after average
-CUDA_VISIBLE_DEVICES=2 python clippings-japanese/train_clippings.py --clip_lr 5e-7 --clip_weight_decay 0.05 --train_data_type labelled --wandb_name bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_supcon05 --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.05 --train_hardneg --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/bienc_clip_pretrain_synth_m3_v3_hardneg.pt" 
+CUDA_VISIBLE_DEVICES=2 python clippings-japanese/train_clippings.py --clip_lr 5e-7 --train_data_type labelled --wandb_name bienc_clip_nopretrain_labelled_m3_v3_hardneg_norm --m 3 --training_type train_bienc --im_wt 0.5 --k 3 --supcon_temp 0.05 --train_hardneg 
 ##Try higher weight decay, lower lr
 
 
@@ -76,24 +84,24 @@ CUDA_VISIBLE_DEVICES=3 python clippings-japanese/train_clippings.py --clip_lr 5e
 ############Effocr
 
 ##Only text
-#CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling_type "text" --output_prefix sup_text_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_synth_m3_v3_hardneg_text_only.pt --ocr_result "effocr" --infer_partnertk
+#CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix sup_text_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_synth_m3_v3_hardneg_text_only.pt --ocr_result "effocr" --infer_partnertk
 
 ##Only image
-#CUDA_VISIBLE_DEVICES=2 python clippings-japanese/clipper_inference.py  --pooling_type "image" --output_prefix sup_img_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_labelled_m3_v3_hardneg_img_only.pt --ocr_result "effocr" --infer_partnertk
+#CUDA_VISIBLE_DEVICES=2 python clippings-japanese/infer_clippings.py  --pooling_type "image" --output_prefix sup_img_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_labelled_m3_v3_hardneg_img_only.pt --ocr_result "effocr" --infer_partnertk
 
 ##Pooled 
-#CUDA_VISIBLE_DEVICES=0 python clippings-japanese/clipper_inference.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" --infer_partnertk
+#CUDA_VISIBLE_DEVICES=0 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" --infer_partnertk
 
 ###################
 
 ##Only text
-CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling_type "text" --output_prefix sup_text_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_synth_m3_v3_hardneg_text_only.pt --ocr_result "gcv" --infer_partnertk
+CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix sup_text_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_synth_m3_v3_hardneg_text_only.pt --ocr_result "gcv" --infer_partnertk
 
 ##Only image
-# CUDA_VISIBLE_DEVICES=2 python clippings-japanese/clipper_inference.py  --pooling_type "image" --output_prefix sup_img_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_labelled_m3_v3_hardneg_img_only.pt --ocr_result "gcv" --infer_partnertk
+# CUDA_VISIBLE_DEVICES=2 python clippings-japanese/infer_clippings.py  --pooling_type "image" --output_prefix sup_img_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_labelled_m3_v3_hardneg_img_only.pt --ocr_result "gcv" --infer_partnertk
 
 ##Pooled 
-#CUDA_VISIBLE_DEVICES=3 python clippings-japanese/clipper_inference.py  --pooling_type "mean" --output_prefix mean_norm_1_gcv --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "gcv" --infer_partnertk
+#CUDA_VISIBLE_DEVICES=3 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_gcv --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "gcv" --infer_partnertk
 
 
 
@@ -102,31 +110,58 @@ CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling
 
 ###On self-supervised model
 ##Text only
-#CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling_type "text" --output_prefix selfsup_text_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "effocr" --infer_partnertk 
+#CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix selfsup_text_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "effocr" --infer_partnertk 
 
 ###Image only
-#CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling_type "image" --output_prefix selfsup_img_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "effocr" --infer_partnertk
+#CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "image" --output_prefix selfsup_img_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "effocr" --infer_partnertk
 
 ###Mean
-#CUDA_VISIBLE_DEVICES=2 python clippings-japanese/clipper_inference.py  --pooling_type "mean" --output_prefix selfsup_mean_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "effocr" --infer_partnertk
+#CUDA_VISIBLE_DEVICES=2 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix selfsup_mean_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "effocr" --infer_partnertk
 
 
 ###GCV pooled self supervised
 
 ###text only
-CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling_type "text" --output_prefix selfsup_text_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "gcv" --infer_partnertk
+CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix selfsup_text_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "gcv" --infer_partnertk
 
 ##Mean 
-# CUDA_VISIBLE_DEVICES=3 python clippings-japanese/clipper_inference.py  --pooling_type "mean" --output_prefix selfsup_mean_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "gcv" --infer_partnertk
+# CUDA_VISIBLE_DEVICES=3 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix selfsup_mean_gcv  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/epoch_40clip_pretrain_unlabelled_m1_v3.pt --ocr_result "gcv" --infer_partnertk
 
 
 
 ###NOW INFERENCE FOR BEST CLIPPER MODELS - only on test data not full prtk
 
 #Only text
-CUDA_VISIBLE_DEVICES=1 python clippings-japanese/clipper_inference.py  --pooling_type "text" --output_prefix sup_text_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_synth_m3_v3_hardneg_text_only.pt --ocr_result "effocr" 
+CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix sup_text_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_synth_m3_v3_hardneg_text_only.pt --ocr_result "effocr" 
 #Only image
-CUDA_VISIBLE_DEVICES=2 python clippings-japanese/clipper_inference.py  --pooling_type "image" --output_prefix sup_img_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_labelled_m3_v3_hardneg_img_only.pt --ocr_result "effocr" 
+CUDA_VISIBLE_DEVICES=2 python clippings-japanese/infer_clippings.py  --pooling_type "image" --output_prefix sup_img_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_0bienc_clip_pretrain_labelled_m3_v3_hardneg_img_only.pt --ocr_result "effocr" 
 
 #Pooled 
-CUDA_VISIBLE_DEVICES=3 python clippings-japanese/clipper_inference.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" 
+CUDA_VISIBLE_DEVICES=3 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" 
+
+
+
+#####BASE CLIP MODEL for effocr and gcv
+
+#Only text
+# CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix base_text_effocr   --ocr_result "effocr" --infer_partnertk
+
+# #Only image
+# CUDA_VISIBLE_DEVICES=2 python clippings-japanese/infer_clippings.py  --pooling_type "image" --output_prefix base_img_effocr   --ocr_result "effocr" --infer_partnertk
+
+# #Pooled
+# CUDA_VISIBLE_DEVICES=3 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix base_mean_effocr   --ocr_result "effocr" --infer_partnertk
+
+# ##Now gcv
+
+# #Only text
+# CUDA_VISIBLE_DEVICES=1 python clippings-japanese/infer_clippings.py  --pooling_type "text" --output_prefix base_text_gcv   --ocr_result "gcv" --infer_partnertk
+
+# #Only image
+# CUDA_VISIBLE_DEVICES=2 python clippings-japanese/infer_clippings.py  --pooling_type "image" --output_prefix base_img_gcv   --ocr_result "gcv" --infer_partnertk
+
+#Pooled
+CUDA_VISIBLE_DEVICES=3 python clippings-japanese/infer_clippings.py  --pooling_type "mean" --output_prefix base_mean_gcv   --ocr_result "gcv" --infer_partnertk
+
+
+####Now train another checkpoint!
