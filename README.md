@@ -31,7 +31,7 @@ This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [mode
         - create_font_image_folder.py
         - multimodal_synth_noise.py
     - match_nomatch
-        -
+        - fill this up
     - vit_scripts (only listing important ones)
         - synth_line_H_V_skip_fonts_wordlist.py : Generate synthetic text redners using a word list
         - split_dataset.py : Split synthetically rendered data into train-val-test
