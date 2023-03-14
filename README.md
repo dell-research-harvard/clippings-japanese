@@ -1,6 +1,5 @@
-# The japanese variant of CLIPPINGS based on japanese CLIP 
 
-# CLIPPINGS
+# CLIPPINGS (Japanese)
 
 This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [model](https://github.com/rinnakk/japanese-clip) trained by a group that has no connection to this project. 
 
