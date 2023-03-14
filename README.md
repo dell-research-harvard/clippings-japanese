@@ -26,14 +26,15 @@ This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [mode
 
 - scripts
     - pre_process_data.py : To prepare the data needed for training Japanese CLIPPINGS for multi-modal record linkage
-    - prep_image_folder_ft.py : To prepare data for training ViT and splitting into train-test-val (the same splits used for multimodal models)
+    - prep_image_folder_ft.py : To prepare LABELLED data for training ViT and splitting into train-test-val (the same splits used for multimodal models)
     - gen_synthetic_dataset
         - create_font_image_folder.py
         - multimodal_synth_noise.py
     - match_nomatch
         -
-    - vit_scripts
-        - 
+    - vit_scripts (only listing important ones)
+        - synth_line_H_V_skip_fonts_wordlist.py : Generate synthetic text redners using a word list
+        - split_dataset.py : Split synthetically rendered data into train-val-test
 
 - utils 
     - datasets_utils.py : Contains the main torchvision transformations needed to transform the images before feeding them into the model
