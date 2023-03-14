@@ -90,7 +90,7 @@ infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --
 
 
 
-### ViT 
+### Vision Transformer
 
 #### Train
 
