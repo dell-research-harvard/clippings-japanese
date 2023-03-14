@@ -141,7 +141,9 @@ python infer_vit.py --root_folder "/path/toPaddleOCR_testing/Paddle_test_images/
 
 
 ### Creating network plots
+```
 
+```
 
 ### Synthetic data generation pipeline 
 We also have scripts to generate synthetic data (both image-only and image-text versions). 
