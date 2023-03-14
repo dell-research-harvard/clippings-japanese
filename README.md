@@ -133,9 +133,11 @@ python infer_vit.py --root_folder "/path/toPaddleOCR_testing/Paddle_test_images/
 ```
 
 
-### Matching Accuracy calculation (Try to integrate it within inference as imported functions)
+### Rule-based traditional Record-linkage baseline
 
+```
 
+```
 
 
 ### Creating network plots
