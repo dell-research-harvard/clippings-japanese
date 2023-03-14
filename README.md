@@ -81,7 +81,7 @@ For image-only training, use im_wt = 1 and for language-only training, use im_wt
 #### Inference
 
 ``` 
-infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" 
+infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /path/to/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" 
 ```
 --pooling_type can be either "mean", "text" or "image" and --ocr_result can be either "effocr" or "gcv". effocr corresponds to the "clean" ocr and "gcv" corresponds to the "noisy" ocr. 
 
@@ -99,14 +99,14 @@ Synthetic contrastive training
 No offline hard negative mining
 
 ```
- python train_vit.py --root_dir_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/images/ --train_images_dir /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/single_font_train/  --run_name vit_word_nohn_japan_center_places_3000_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 256 --num_epochs 10 --num_passes 1 --lr 0.00005791180952082007 --test_at_end --imsize 224 --train_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/splits/train.json" --val_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/splits/val.json" --test_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/splits/test.json" --m 8 --temp 0.048 --weight_decay 0.0398 --resize --epoch_viz_dir /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz/ --use_renders
+ python train_vit.py --root_dir_path /path/to/word_dump_centered_japan_places_20000/images/ --train_images_dir /path/to/word_dump_centered_japan_places_20000/single_font_train/  --run_name vit_word_nohn_japan_center_places_20000_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 256 --num_epochs 10 --num_passes 1 --lr 0.00005791180952082007 --test_at_end --imsize 224 --train_ann_path "/path/to/word_dump_centered_japan_places_20000/splits/train.json" --val_ann_path "/path/to/word_dump_centered_japan_places_20000/splits/val.json" --test_ann_path "/path/to/word_dump_centered_japan_places_20000/splits/test.json" --m 8 --temp 0.048 --weight_decay 0.0398 --resize --epoch_viz_dir /path/toPaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz/ --use_renders
 
 ```
 
 With offline hard negative mining
 
 ```
-python train_vit.py --root_dir_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/images/ --train_images_dir /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/single_font_train/  --run_name vit_word_hn_japan_center_places_3000_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 256 --num_epochs 4 --num_passes 1 --lr 0.00005791180952082007 --test_at_end --imsize 224 --train_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/splits/train.json" --val_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/splits/val.json" --test_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_3000/splits/test.json" --m 8 --temp 0.048 --weight_decay 0.0398 --resize --hns_txt_path ./vit_word_nohn_japan_center_places_3000_recheck/hns.txt --epoch_viz_dir /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz --use_renders
+python train_vit.py --root_dir_path /path/to/word_dump_centered_japan_places_20000/images/ --train_images_dir /path/to/word_dump_centered_japan_places_20000/single_font_train/  --run_name vit_word_hn_japan_center_places_20000_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 256 --num_epochs 4 --num_passes 1 --lr 0.00005791180952082007 --test_at_end --imsize 224 --train_ann_path "/path/to/word_dump_centered_japan_places_20000/splits/train.json" --val_ann_path "/path/to/word_dump_centered_japan_places_20000/splits/val.json" --test_ann_path "/path/to/word_dump_centered_japan_places_20000/splits/test.json" --m 8 --temp 0.048 --weight_decay 0.0398 --resize --hns_txt_path ./vit_word_nohn_japan_center_places_20000_recheck/hns.txt --epoch_viz_dir /path/toPaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz --use_renders
 
 ```
 
@@ -116,19 +116,19 @@ Fine-tuning on labelled data
 
 
 ```
- python train_vit.py --root_dir_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/images/  --run_name vit_word_nohn_japan_center_places_20000_finetuned_new_test_val_test_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 252 --num_epochs 1 --num_passes 1 --lr 2e-6 --test_at_end --imsize 224 --train_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train.json" --val_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/val.json" --test_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/test.json" --m 3 --temp 0.09 --weight_decay 0.1 --resize --epoch_viz_dir /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz/  --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/vit_word_hn_japan_center_places_20000/enc_best.pth" --train_images_dir "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train_images"
+ python train_vit.py --root_dir_path /path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/images/  --run_name vit_word_nohn_japan_center_places_20000_finetuned_new_test_val_test_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 252 --num_epochs 1 --num_passes 1 --lr 2e-6 --test_at_end --imsize 224 --train_ann_path "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train.json" --val_ann_path "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/val.json" --test_ann_path "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/test.json" --m 3 --temp 0.09 --weight_decay 0.1 --resize --epoch_viz_dir /path/toPaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz/  --checkpoint "/path/to/vit_word_hn_japan_center_places_20000/enc_best.pth" --train_images_dir "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train_images"
 
 ```
 
 ```
- python train_vit.py --root_dir_path /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/images/  --run_name vit_word_nohn_japan_center_places_20000_finetuned_new_test_val_hn_test_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 252 --num_epochs 1 --num_passes 1 --lr 2e-6 --test_at_end --imsize 224 --train_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train.json" --val_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/val.json" --test_ann_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/test.json" --m 3 --temp 0.09 --weight_decay 0.1 --resize --epoch_viz_dir /mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz/  --checkpoint "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/vit_word_hn_japan_center_places_20000/enc_best.pth" --hns_txt_path ./vit_word_nohn_japan_center_places_20000_finetuned_new_test_val/hns.txt --train_images_dir "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train_images"
+ python train_vit.py --root_dir_path /path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/images/  --run_name vit_word_nohn_japan_center_places_20000_finetuned_new_test_val_hn_test_recheck --auto_model_timm vit_base_patch16_224.dino --batch_size 252 --num_epochs 1 --num_passes 1 --lr 2e-6 --test_at_end --imsize 224 --train_ann_path "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train.json" --val_ann_path "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/val.json" --test_ann_path "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/test.json" --m 3 --temp 0.09 --weight_decay 0.1 --resize --epoch_viz_dir /path/toPaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz/  --checkpoint "/path/to/vit_word_hn_japan_center_places_20000/enc_best.pth" --hns_txt_path ./vit_word_nohn_japan_center_places_20000_finetuned_new_test_val/hns.txt --train_images_dir "/path/todeeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train_images"
 
 ```
 
 #### Inference
 
 ```
-python infer_vit.py --root_folder "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit_all_infer_prtkfinal_synthonly" --timm_model vit_base_patch16_224.dino  --checkpoint_path "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/best_models/enc_best_e_ulti.pth" --recopy
+python infer_vit.py --root_folder "/path/toPaddleOCR_testing/Paddle_test_images/japan_vit_all_infer_prtkfinal_synthonly" --timm_model vit_base_patch16_224.dino  --checkpoint_path "/path/todeeprecordlinkage/vision_dir/best_models/enc_best_e_ulti.pth" --recopy
 
 ```
 
