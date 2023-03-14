@@ -19,4 +19,4 @@ Step5  run 'G1_Plt.py'
        -The output will be 'Clean OCR Multimodal CLIPPINGS.html'
 Step6  run 'G2_Plt.py'
        -It needs 'G2.pickle' and 'pos_G2.pickle' as inputs.
-       -The output will be 'Noisy OCR Levenshtein'
+       -The output will be 'Noisy OCR Levenshtein.html'
