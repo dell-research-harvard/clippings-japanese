@@ -538,7 +538,7 @@ if __name__ == "__main__":
                     k=args.infer_hardneg_k,render=False)  ##Keep render=True for using synthetic data for training. 
 
 
-
+    ###Run it. The "Main" function helps us set up wandb sweeps when needed.
     main()
 
 
