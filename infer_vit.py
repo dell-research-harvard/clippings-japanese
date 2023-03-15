@@ -564,7 +564,7 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
         os.mkdir(output_check_dir)
     
     ##Write df
-    df_path=os.path.join(root_folder,"bm_df.csv")
+    df_path=os.path.join('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm',"bm_df.csv")
     bm_df.to_csv(df_path,index=False)
     ##Get output checks through images
     # ## Make top 10 match dict
@@ -609,7 +609,7 @@ if __name__ == "__main__":
     # Load model
     ##Args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--root_folder', type=str, default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/PaddleOCR_testing', help='path to image folder')
+    parser.add_argument('--root_folder', type=str, default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit_all_infer_prtkfinal_synthonly', help='path to image folder')
     parser.add_argument('--timm_model', type=str, default="vit_base_patch16_224.dino", help='timm vision transformer model')
     parser.add_argument('--checkpoint_path', type=str, default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/best_models/enc_best_e_ulti.pth', help='trained model checkpoint')
     parser.add_argument('--lang_code', type=str, default='TK', help='language code - PR is not needed for paper replication')
