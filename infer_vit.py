@@ -609,7 +609,7 @@ if __name__ == "__main__":
     # Load model
     ##Args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--root_folder', type=str, default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/PaddleOCR_testing/Paddle_test_images/japan_vit_all_infer_prtkfinal_synthonly', help='path to image folder')
+    parser.add_argument('--root_folder', type=str, default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/PaddleOCR_testing', help='path to image folder')
     parser.add_argument('--timm_model', type=str, default="vit_base_patch16_224.dino", help='timm vision transformer model')
     parser.add_argument('--checkpoint_path', type=str, default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/best_models/enc_best_e_ulti.pth', help='trained model checkpoint')
     parser.add_argument('--lang_code', type=str, default='TK', help='language code - PR is not needed for paper replication')
@@ -622,7 +622,8 @@ if __name__ == "__main__":
     model=args.timm_model
     trained_model_path=args.checkpoint_path
     lang_code=args.lang_code
-    root_folder=args.root_folder
+    
+    =args.root_folder
     recopy = args.recopy
 
     # Call the main function
