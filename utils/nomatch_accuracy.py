@@ -112,15 +112,33 @@ if __name__ == "__main__":
 
         # The function
         if args.finetune:
-            matched_results["TK_truth_image"] = matched_results.apply(lambda x:truth_TK_partnerpath_2_titlepath[x["source"]] if x["source"] in truth_TK_partnerpath_2_titlepath else [-9], axis=1)
-            # Clean this to a list
-            df_val = matched_results[matched_results["source"].isin(nomatch_val_subset)]
-            df_test = matched_results[matched_results["source"].isin(nomatch_test_subset)]
-            
-            print('nomatch validation set size',len(df_val),'nomatch test set size',len(df_test))
-            accuracy_dict[file_name] = match_result(file_name)
-            with open(os.path.join(args.output_dir,'nomatch_accuracy_finetune.json'),'w') as f:
-                json.dump(accuracy_dict, f, ensure_ascii=False)
+            if 'lev' in file_name:#Use random search for levenshtein match
+                matched_results["TK_truth_image"] = matched_results.apply(lambda x:truth_TK_partnerpath_2_titlepath[x["source"]] if x["source"] in truth_TK_partnerpath_2_titlepath else [-9], axis=1)
+                # Clean this to a list
+                df_val = matched_results[matched_results["source"].isin(nomatch_val_subset)]
+                df_test = matched_results[matched_results["source"].isin(nomatch_test_subset)]
+                
+                print('nomatch validation set size',len(df_val),'nomatch test set size',len(df_test))
+                accuracy_dict[file_name] = match_result(file_name)
+                with open(os.path.join(args.output_dir,'nomatch_accuracy_finetune.json'),'w') as f:
+                    json.dump(accuracy_dict, f, ensure_ascii=False)
+            else:
+                thresh_list = [i/100 for i in range(0,101)]
+                
+                val_best = -9
+                for thresh in thresh_list:
+                    df_val['prediction']=df_val.apply(lambda row:label_predict(row,thresh,"distance","matched_tk_path",0),axis=1)
+                    df_val["accuracy"]=df_val.apply(lambda x: 1 if x["prediction"] in x["TK_truth_image"] else 0,axis=1)
+                    # Maybe also save the csv here for reference to errors picking
+                    val_accuracy=df_val["accuracy"].mean()
+                    df_test['prediction']=df_test.apply(lambda row:label_predict(row,thresh,"distance","matched_tk_path",0),axis=1)
+                    df_test["accuracy"]=df_test.apply((lambda x: 1 if x["prediction"] in x["TK_truth_image"] else 0),axis=1)
+                    test_accuracy=df_test["accuracy"].mean()
+                    if val_accuracy>val_best:
+                        val_best = val_accuracy
+                        accuracy_dict[file_name] = [thresh, val_accuracy]
+                    with open(os.path.join(args.output_dir,'nomatch_accuracy_finetune_grid_search.json'),'w') as f:
+                        json.dump(accuracy_dict, f, ensure_ascii=False)         
 
         else:
             calculate_nomatch_accuracy(match_results = 'DATAFRAME', file_name = 'mean_norm_1_effocr_partner_tk_match.csv', levenshtein_match = False)
