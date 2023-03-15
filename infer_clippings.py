@@ -362,30 +362,15 @@ if __name__ == "__main__":
     clippings_linkage_output=get_clipping_embeddings(partner_loader,tk_universe_loader,model,device,pooling_type=args.pooling_type,im_wt=args.img_wt)
     ###Make the match df
     if args.use_gpu_faiss:
-
-        test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=True)
+        test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=True)
     else:
-        test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=False)
+        test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=False)
     
-
-
-
-
-    # ##Get test and universe loaders
-    # test_data_loader,tk_universe_loader=prep_test_universe_data(ocr_tk_match_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/TK_matched_ocr_0303.csv",
-    #                         test_data_path=split_path)
-
-    # ##Get clippings embeddings - clippings output dict
-    # clippings_linkage_output=get_clipping_embeddings(test_data_loader,tk_universe_loader,model,device,pooling_type=args.pooling_type,im_wt=args.img_wt)
-
-    # ###Make the match df
-    # test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_test_tk_match.csv")
-    
-    ###Report accuracy
+    ## The test subset is already in the function
     print('matched test accuracy:', calculate_matched_accuracy(match_results = test_match_df))
 
     if args.ocr_result == "gcv":
-        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82, levenshtein_match = False))
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, file_name="mean_norm_1_gcv_partner_tk_match.csv", levenshtein_match = False))
     else:        
-        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82, levenshtein_match = False))
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, file_name="mean_norm_1_effocr_partner_tk_match.csv", levenshtein_match = False))
 
