@@ -36,6 +36,7 @@ import cv2
 from collections import defaultdict
 ##Viz attention  masks
 from datetime import datetime
+import copy
 
 from utils.matched_accuracy import calculate_matched_accuracy
 from utils.nomatch_accuracy import calculate_nomatch_accuracy
@@ -601,8 +602,9 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     print("NN time: ",nn_time)
 
     ## Calculate match, nomatch accuracy
+    topk_bm_df_for_nomatch = copy.deepcopy(topk_bm_df)
     print('matched test accuracy:', calculate_matched_accuracy(matched_results = topk_bm_df))
-    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = topk_bm_df, file_name="top1_bm_df_all_data_formatted_vit.csv", levenshtein_match = False))
+    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = topk_bm_df_for_nomatch, file_name="top1_bm_df_all_data_formatted_vit.csv", levenshtein_match = False))
 
 # Run as script
 if __name__ == "__main__":
