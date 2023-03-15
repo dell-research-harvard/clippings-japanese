@@ -120,7 +120,7 @@ if __name__ == "__main__":
             df_matched["matched_tk_path"] = df_matched[f"lev_{task_name}_matched_path_1"]
             df_matched.to_csv(os.path.join(args.save_output,f'df_full_matched_{task_name}_lev.csv'))
 
-            accuracy_dict[f"{task_name}_lev_match"] = calculate_matched_accuracy(match_results = df_matched)
+            accuracy_dict[f"{task_name}_lev_match"] = calculate_matched_accuracy(matched_results = df_matched)
 
             print('matched test accuracy:', calculate_matched_accuracy(matched_results = df_matched))
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
             df_matched["matched_tk_path"] = df_matched[f"fuzzychinese_stroke_{task_name}_matched_path_1"]
             df_matched.to_csv(os.path.join(args.save_output,f'df_full_matched_{task_name}_fuzzychinese.csv'))
 
-            print('matched test accuracy:', calculate_matched_accuracy(match_results = df_matched))
+            print('matched test accuracy:', calculate_matched_accuracy(matched_results = df_matched))
 
             accuracy_dict[f"{task_name}_stroke_match"] = calculate_matched_accuracy(matched_results = df_matched)
 
