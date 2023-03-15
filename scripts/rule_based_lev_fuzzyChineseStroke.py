@@ -173,7 +173,7 @@ if __name__ == "__main__":
             df_matched["distance"] = df_matched[f'fuzzychinese_stroke_{task_name}_word_dist_1']
             df_matched.to_csv(os.path.join(args.save_output,f'df_full_matched_{task_name}_fuzzychinese.csv'))
             
-            df_matched_for_nomatch = copy.deepcopy(df_matched_for_nomatch)
+            df_matched_for_nomatch = copy.deepcopy(df_matched)
 
             print('matched test accuracy:', calculate_matched_accuracy(matched_results = df_matched))
 
