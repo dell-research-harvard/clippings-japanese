@@ -21,8 +21,8 @@ def same_matched(a,b):
                 return 1
     return 0
 
-def calculate_matched_accuracy(matched_results = "DATAFRAME/FOR/CALCULATE/ACCURACY", match_ground_truth = "DIR/TO/GROUND_TRUTH/truth_TK_partnerpath_2_titlepath.json", \
-    match_test_subset = "PATH/TO/TEST/SET", source_image_path = 'DIR/TO/SOURCE/IMAGE'):
+def calculate_matched_accuracy(matched_results = "DATAFRAME/FOR/CALCULATE/ACCURACY", match_ground_truth = "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ground_truth/truth_TK_partnerpath_2_titlepath_0314.json", \
+    match_test_subset = "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/test_paths.json", source_image_path = "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/pr_partner_crop_36673/"):
 
     with open(match_ground_truth) as f:
         truth_TK_partnerpath_2_titlepath = json.load(f)
