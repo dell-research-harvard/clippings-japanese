@@ -623,7 +623,7 @@ if __name__ == "__main__":
     trained_model_path=args.checkpoint_path
     lang_code=args.lang_code
     
-    args.root_folder
+    root_folder = args.root_folder
     recopy = args.recopy
 
     # Call the main function
