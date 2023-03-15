@@ -86,9 +86,9 @@ def calculate_nomatch_accuracy(matched_results = 'DATAFRAME', file_name = 'mean_
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--match_results_dir", type=str, default='./dataset/full_inference', help='the dir contains files you want to calculate matched accuracy for')
-    parser.add_argument("--match_ground_truth", type=str, default='./dataset/ground_truth/truth_TK_partnerpath_2_titlepath_0308.json', help='path to ground truth file')
-    parser.add_argument("--nomatch_val_subset", type=str, default='./dataset/nomatch_split/val_list_0313_v1.json')
-    parser.add_argument("--nomatch_test_subset", type=str, default='./dataset/nomatch_split/test_list_0313_v1.json')
+    parser.add_argument("--match_ground_truth", type=str, default='./dataset/ground_truth/truth_TK_partnerpath_2_titlepath_0314.json', help='path to ground truth file')
+    parser.add_argument("--nomatch_val_subset", type=str, default='./dataset/nomatch_split/val_list_0314_v1.json')
+    parser.add_argument("--nomatch_test_subset", type=str, default='./dataset/nomatch_split/test_list_0314_v1.json')
     parser.add_argument("--output_dir", type=str, default='./nomatch_output')
     parser.add_argument("--finetune", action="store_true", default=False)
     parser.add_argument("--best_nomatch_threshold", type=str, default='./dataset/nomatch_split/nomatch_acc.json')# The second element is the threshold
