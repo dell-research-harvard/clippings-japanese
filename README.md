@@ -144,9 +144,7 @@ python scripts/rule_based_lev_fuzzyChineseStroke.py --lev --fuzzychinese_stroke 
 
 
 ### Creating network plots
-```
-
-```
+We have scripts to generate the network figures in the paper. Refer to docs/network_vis_pipeline.md to regenerate the figures with appropriate seeds already filled in.
 
 ### Synthetic data generation pipeline 
 We also have scripts to generate synthetic data (both image-only and image-text versions). 
