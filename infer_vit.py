@@ -580,7 +580,7 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     print(list(topk_bm_dict.items())[0])
 
     ###Write dict as json
-    dict_path=os.path.join(root_folder,"top1_bm_dict_all_data.json")
+    dict_path=os.path.join('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm',"top1_bm_dict_all_data.json")
     with open(dict_path, 'w') as fp:
         json.dump(topk_bm_dict, fp)
 
@@ -594,15 +594,15 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     topk_bm_df=pd.DataFrame(topk_bm_list,columns=["source","matched_tk_path","distance"])
 
     ##Write df
-    df_path=os.path.join(root_folder,"top1_bm_df_all_data_formatted.csv")
+    df_path=os.path.join('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm',"top1_bm_df_all_data_formatted.csv")
     topk_bm_df.to_csv(df_path,index=False)
 
     print("Embedding time: ",embedding_time)
     print("NN time: ",nn_time)
 
     ## Calculate match, nomatch accuracy
-    print('matched test accuracy:', calculate_matched_accuracy(match_results = topk_bm_df))
-    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = topk_bm_df, file_name="top1_bm_df_all_data_formatted.csv", levenshtein_match = False))
+    print('matched test accuracy:', calculate_matched_accuracy(matched_results = topk_bm_df))
+    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = topk_bm_df, file_name="top1_bm_df_all_data_formatted.csv", levenshtein_match = False))
 
 # Run as script
 if __name__ == "__main__":
