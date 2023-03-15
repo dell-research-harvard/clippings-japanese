@@ -54,11 +54,13 @@ def match_result(file_name): # The what should be named as task, which is better
     test_accuracy = df_test["accuracy"].mean()
     return [random_best,val_accuracy,test_accuracy]
 
-def calculate_nomatch_accuracy(match_results = 'DATAFRAME', best_no_match_thresh = 'finetuned result', levenshtein_match = False):
+def calculate_nomatch_accuracy(match_results = 'DATAFRAME', file_name = 'mean_norm_1_effocr_partner_tk_match.csv', levenshtein_match = False):
+    with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/nomatch_thresh.json') as f:
+        nomatch_thresh = json.load(f)
     if levenshtein_match == True:
-        df_test['prediction']=df_test.apply(lambda row:label_predict(row,best_no_match_thresh,"distance","matched_tk_path",1),axis=1)
+        df_test['prediction']=df_test.apply(lambda row:label_predict(row,float(nomatch_thresh[file_name][0]),"distance","matched_tk_path",1),axis=1)
     else:
-        df_test['prediction']=df_test.apply(lambda row:label_predict(row,best_no_match_thresh,"distance","matched_tk_path",0),axis=1)
+        df_test['prediction']=df_test.apply(lambda row:label_predict(row,float(nomatch_thresh[file_name][0]),"distance","matched_tk_path",0),axis=1)
 
     df_test["accuracy"]=df_test.apply(lambda x: 1 if x["prediction"] in x["TK_truth_image"] else 0,axis=1)
     test_accuracy=df_test["accuracy"].mean()
@@ -74,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument("--nomatch_test_subset", type=str, default='./dataset/nomatch_split/test_list_0313_v1.json')
     parser.add_argument("--output_dir", type=str, default='./nomatch_output')
     parser.add_argument("--finetune", action="store_true", default=False)
-    parser.add_argument("--best_nomatch_threshold", type=str, default='./dataset/nomatch_split/nomatch_accuracy_top1_0313.json')# The second element is the threshold
+    parser.add_argument("--best_nomatch_threshold", type=str, default='./dataset/nomatch_split/nomatch_acc.json')# The second element is the threshold
 
     args = parser.parse_args()
 
