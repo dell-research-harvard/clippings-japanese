@@ -18,6 +18,7 @@ from fuzzychinese import FuzzyChineseMatch
 import matplotlib.pyplot as plt
 import textdistance as td
 import sys
+import copy
 
 sys.path.append("..")
 
@@ -171,17 +172,20 @@ if __name__ == "__main__":
             df_matched["source"] = df_matched["partner_path"]
             df_matched["distance"] = df_matched[f'fuzzychinese_stroke_{task_name}_word_dist_1']
             df_matched.to_csv(os.path.join(args.save_output,f'df_full_matched_{task_name}_fuzzychinese.csv'))
+            
+            df_matched_for_nomatch = copy.deepcopy(df_matched_for_nomatch)
 
             print('matched test accuracy:', calculate_matched_accuracy(matched_results = df_matched))
 
             accuracy_dict[f"{task_name}_stroke_match"] = calculate_matched_accuracy(matched_results = df_matched)
+           
 
             if "gcv" in task_name:
-                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = df_matched, file_name = "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv", levenshtein_match = False))
-                accuracy_dict[f"{task_name}_stroke_nomatch"] = calculate_nomatch_accuracy(matched_results = df_matched, file_name = "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv", levenshtein_match = False)
+                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = df_matched_for_nomatch, file_name = "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv", levenshtein_match = False))
+                accuracy_dict[f"{task_name}_stroke_nomatch"] = calculate_nomatch_accuracy(matched_results = df_matched_for_nomatch, file_name = "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv", levenshtein_match = False)
             else:        
-                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = df_matched, file_name = "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv", levenshtein_match = False))
-                accuracy_dict[f"{task_name}_stroke_nomatch"] = calculate_nomatch_accuracy(matched_results = df_matched, file_name = "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv", levenshtein_match = False)
+                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = df_matched_for_nomatch, file_name = "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv", levenshtein_match = False))
+                accuracy_dict[f"{task_name}_stroke_nomatch"] = calculate_nomatch_accuracy(matched_results = df_matched_for_nomatch, file_name = "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv", levenshtein_match = False)
             
             with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/accuracy_check.json','w') as f:
                 json.dump(accuracy_dict,f,ensure_ascii=False)
