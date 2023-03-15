@@ -16,7 +16,6 @@ from PIL import ImageFont, ImageDraw, Image
 from tqdm import tqdm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-
 import torch
 import os
 import hashlib
@@ -25,26 +24,21 @@ from timm.models import load_state_dict
 import argparse
 import wandb
 from glob import glob
-
 from matplotlib import pyplot as plt
-
 from models.encoders import *
 
 from copy import deepcopy
 import resource
 rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
 resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))
-
 torch.multiprocessing.set_sharing_strategy('file_system')
-##Import cv2
 import cv2
-
 from collections import defaultdict
-
 ##Viz attention  masks
 from datetime import datetime
 
-
+from utils.matched_accuracy import calculate_matched_accuracy
+from utils.nomatch_accuracy import calculate_nomatch_accuracy
 
 ###Collate fn
 def diff_size_collate(batch):
@@ -55,7 +49,6 @@ def diff_size_collate(batch):
 ###Custom transforms
 
 class MedianPad:
-
     def __init__(self, override=None):
 
         self.override = override
@@ -79,14 +72,11 @@ class MedianPad:
 
         return transforms.Pad(padding, fill=medval if self.override is None else self.override)(image)
 
-
 def diff_size_collate(batch):
     data = [item[0] for item in batch]
     target = [item[1] for item in batch]
     target = torch.LongTensor(target)
     return [data, target]
-
-
 
 BASE_TRANSFORM = transforms.Compose([
         MedianPad(override=(255,255,255)),
@@ -103,8 +93,6 @@ NO_PAD_NO_RESIZE_TRANSFORM = transforms.Compose([
         transforms.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD)
 ])
 
-
-
 def get_embedding_list(image_folder, timm_pretrained_model=None,trained_pth=None, device="cuda", batch_size=16,transform_type='base',xcit=False):
     """
     Encode all images in a folder using ViT base
@@ -114,8 +102,6 @@ def get_embedding_list(image_folder, timm_pretrained_model=None,trained_pth=None
         ##Load Xcit model for variable size images
         encoder = XcitEncoder
         model = encoder()
-
-        
     
     else:
         model = timm.create_model(timm_pretrained_model, num_classes=0, pretrained=True,img_size=224)
@@ -127,16 +113,6 @@ def get_embedding_list(image_folder, timm_pretrained_model=None,trained_pth=None
             model.load_state_dict(clean_checkpoint(trained_pth))
     model.to(device)
     model.eval()
-        
-    # transform=create_transform(**config)
-
-    # print(transform)
-    # Create image loader and transform
-    # transform = transforms.Compose([
-    #     transforms.Resize((224, 224)),
-    #     transforms.ToTensor(),
-    #     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) - IMAGENET mean doesnt work that well
-    # ])
     
     if transform_type=='base':
         transform = transforms.Compose([transforms.Resize(248,
@@ -175,9 +151,6 @@ def get_embedding_list(image_folder, timm_pretrained_model=None,trained_pth=None
     for images, _ in tqdm(image_loader):
 
         images = [image.to(device) for image in images]  if transform_type=='no_pad_no_resize' else images.to(device)
-
-
-        # images = [image.to(device) for image in images] if transform_type=='no_pad_no_resize' else images.to(device)
         i=0
         with torch.no_grad(): #Get last hidden state
             if transform_type=='no_pad_no_resize':
@@ -204,9 +177,6 @@ def get_embedding_list(image_folder, timm_pretrained_model=None,trained_pth=None
                 image_embeddings.append(embedding)
 
     ####Chunk the imaeges to avoid memory issues
-    
-
-
     image_paths=[x[0] for x in image_loader.dataset.imgs]
     print(len(image_embeddings))
     print(image_embeddings[0].shape)
@@ -217,25 +187,14 @@ def get_embedding_list(image_folder, timm_pretrained_model=None,trained_pth=None
 
     return image_embeddings, image_paths
 
-
-
-
 def get_nearest_neighbors(source_embeddings, target_embeddings, top_k=5):
     """
     Find nearest neighbors using FAISS
     """
-
     # Create index
     ##Normalise the embeddings
     source_embeddings = source_embeddings / np.linalg.norm(source_embeddings, axis=1, keepdims=True)
     target_embeddings = target_embeddings / np.linalg.norm(target_embeddings, axis=1, keepdims=True)
-
-    ##REduce the dimensionality of the embeddings
-    # print("Reducing dimensionality...")
-    # mat=faiss.PCAMatrix(source_embeddings[0].shape[0], 64)
-    # mat.train(source_embeddings)
-    # source_embeddings = mat.apply_py(source_embeddings)
-    # target_embeddings = mat.apply_py(target_embeddings)
 
     index = faiss.IndexFlatIP(source_embeddings[0].shape[0])
     print(target_embeddings.shape)
@@ -290,15 +249,6 @@ def fast_match_topk_dict(source_paths,target_paths,indices,distances,k,og_source
     
     return match_dict
 
-
-
-
-
- 
-
-
-
-
 def viz_matches(match_df,n=10,save_dir="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/",lang_code="TK"):
     """
     Visualize the matches
@@ -317,7 +267,6 @@ def viz_matches(match_df,n=10,save_dir="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a18
     
     ##Save the figure
     plt.savefig(save_dir+"_"+lang_code+"_"+f"matches_result.png",dpi=600)
-
 
 def check_match_accuracy(origin_df,result_df,results_dir,lang_code="TK"):
     """
@@ -338,8 +287,6 @@ def check_match_accuracy(origin_df,result_df,results_dir,lang_code="TK"):
         if (origin_target) == (result_target):
             correct += 1
     print("Accuracy: ", correct / len(origin_df))
-    
-
     ###Visualise correct matches
     counter=0
     fig, ax = plt.subplots(10, 2, figsize=(10, 10),gridspec_kw={'width_ratios': [1, 1]})
@@ -355,9 +302,6 @@ def check_match_accuracy(origin_df,result_df,results_dir,lang_code="TK"):
         ax[counter][0].imshow(source)
         ##Increase the size of the target image - width of target = height of source with fixed aspect ratio
         # target = target.resize((source.size[1],int(target.size[1]*source.size[1]/target.size[0])))
-
-
-
         ax[counter][1].imshow(target)
         ax[counter][0].set_title("Source")
         ax[counter][1].set_title("Target")
@@ -386,9 +330,6 @@ def check_match_accuracy(origin_df,result_df,results_dir,lang_code="TK"):
 
         ax[counter][0].imshow(source)
         ##Increase the size of the target image - width of target = height of source with fixed aspect ratio
-        # target = target.resize((source.size[1],int(target.size[1]*source.size[1]/target.size[0])))
-
-
         ax[counter][1].imshow(target)
         ax[counter][2].imshow(origin_target)
         ax[counter][0].set_title("Source")
@@ -404,12 +345,7 @@ def check_match_accuracy(origin_df,result_df,results_dir,lang_code="TK"):
     
     ###Add some space between the subplots
     plt.subplots_adjust(wspace=0.5, hspace=0.5)
-
     plt.savefig(results_dir+"_"+lang_code+"_"+f"incorrect_matches_result.png",dpi=600)
-
-
-
-
             
 def check_topk_match_accuracy(origin_df,result_df,k,results_dir,lang_code="TK"):
     """
@@ -420,10 +356,6 @@ def check_topk_match_accuracy(origin_df,result_df,k,results_dir,lang_code="TK"):
     origin_df["target_fname"]=origin_df["target"].apply(lambda x: os.path.basename(x))
     result_df["source_fname"]=result_df["source"].apply(lambda x: os.path.basename(x))
     result_df["target_fname"]=result_df["target"].apply(lambda x: os.path.basename(x))
-
-
-
-
     ##Check topk accuracy
     correct = 0
     for img_name in origin_df["source_fname"].unique():
@@ -434,9 +366,7 @@ def check_topk_match_accuracy(origin_df,result_df,k,results_dir,lang_code="TK"):
     
     top_k_accuracy=correct / len(origin_df)
     print(f"Top{k} Accuracy: ", correct / len(origin_df))
-
     ##Visualise correct matches (match exists in topk)
-    
     counter=0
     fig, ax = plt.subplots(10, k+1, figsize=(10, 10))
     for i,img_name in enumerate(origin_df["source_fname"].unique()):
@@ -513,28 +443,6 @@ def check_topk_match_accuracy(origin_df,result_df,k,results_dir,lang_code="TK"):
     print(top_k_accuracy)
     return(top_k_accuracy)
 
-
-
-
-    ###Add some space between the subplots
-    # plt.subplots_adjust(wspace=0.5, hspace=0.5)
-
-    # plt.savefig(results_dir+"_"+lang_code+"_"+f"incorrect_matches_result_top{k}.png",dpi=6000)
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
 def get_file_name(path):
     """
     Get file name from path
@@ -573,8 +481,6 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     if not os.path.exists(root_folder):
         os.mkdir(root_folder)
 
-    
-    
       ##EMpty lang folder if it exists
     lang_folder=os.path.join(root_folder,lang_code)
     
@@ -585,7 +491,6 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
         
     if not os.path.exists(lang_folder):
         os.mkdir(lang_folder)
-
 
     ##Create a folder for source images
     source_folder=os.path.join(lang_folder,"source")
@@ -605,8 +510,6 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     else:
         target_root="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/pr_title_crop_6725/"
         target_image_paths=glob("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/pr_title_crop_6725/*")
-
-    
 
     if recopy:
         print("Copying files...")
@@ -629,10 +532,6 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     end_time = datetime.now()
 
     embedding_time=end_time-start_time
-    # all_embeddings,image_paths = get_embedding_list(image_folder, pretrained_model='vit_base_patch16_224',
-    # trained_pth=None, device="cuda",
-    # batch_size=16,transform_type='base')
-    ##Separate into clean and noisy images
     source_image_paths=[]
     source_image_name=[]
     target_image_paths=[]
@@ -668,9 +567,6 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     df_path=os.path.join(root_folder,"bm_df.csv")
     bm_df.to_csv(df_path,index=False)
     ##Get output checks through images
-
-
-
     # ## Make top 10 match dict
     topk_bm_dict=fast_match_topk_dict(source_image_paths,target_image_paths, indices,distances,1)
 
@@ -704,19 +600,9 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     print("Embedding time: ",embedding_time)
     print("NN time: ",nn_time)
 
-
-
-    
-
-
-
-
-
-
-
-
-
-    
+    ## Calculate match, nomatch accuracy
+    print('matched test accuracy:', calculate_matched_accuracy(match_results = topk_bm_df))
+    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = topk_bm_df, file_name="top1_bm_df_all_data_formatted.csv", levenshtein_match = False))
 
 # Run as script
 if __name__ == "__main__":
@@ -733,40 +619,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     
-    ##Clean image_paths
-    
-
-    ##Prepare data folders
     model=args.timm_model
     trained_model_path=args.checkpoint_path
     lang_code=args.lang_code
     root_folder=args.root_folder
     recopy = args.recopy
-   
 
-    # for alpha in [1,2,3,4,5,6,7,8,9]:
-    #     print("alpha: ",alpha)
-
-        ###Check if model exists
-        
-        # trained_model_path=os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/vit_word_nohn_japan_center_places_20000_finetuned/","enc_best_{}.pth".format(alpha))
-        # if not os.path.exists(trained_model_path):
-        #     print("Model does not exist")
-        #     continue
-        # else:
-        #     main(root_folder, model, trained_model_path , lang_code, transform_type=args.transform_type,xcit=args.xcit,remove_train=True,recopy=False)
+    # Call the main function
     main(root_folder, model, trained_model_path , lang_code, transform_type=args.transform_type,xcit=args.xcit,recopy=recopy)
-
-
-
-
-    
-
-
-    # Find nearest neighbors
-    # distances, indices = get_nearest_neighbors(source_embeddings, target_embeddings, top_k=5)
-
-    # # Print accuracy
-    # print("Top 5 accuracy: ", np.mean([i in indices[i] for i in range(len(indices))]))
-
-    # print("Total number of images: ", len(indices))
