@@ -19,9 +19,9 @@ from itertools import repeat
 # Define functions
 def label_predict(row,thres,dist,image_id,flag):# The prediction incorporates the no matches
     if flag==1:
-        return row[image_id] if row[dist]<thres else -9
+        return row[image_id] if float(row[dist])<thres else -9
     else:
-        return row[image_id] if row[dist]>thres else -9
+        return row[image_id] if float(row[dist])>thres else -9
 
 def match_result(file_name): # The what should be named as task, which is better
     def objective_function(dist,image_id,flag,true):
