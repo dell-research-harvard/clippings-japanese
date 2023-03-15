@@ -3,7 +3,6 @@ import pandas as pd
 import os
 import random
 import pickle
-from IPython.display import display
 import networkx
 import matplotlib.pyplot as plt
 from bokeh.io import  show,save
@@ -13,7 +12,7 @@ from bokeh.plotting import from_networkx
 from bokeh.io import output_notebook, show, save
 from bokeh.palettes import Reds256
 from bokeh.transform import linear_cmap
-import colorcet as cc
+
 
 
 #if main = name
