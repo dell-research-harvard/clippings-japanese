@@ -154,18 +154,19 @@ Refer to docs/synthetic_data_generation.md for details
 
 ### Replication of main results
 
-|                                | **Noisy OCR** | **Clean OCR**|
-|--------------------------------|-----------|------------------|
-| **Levenshtein distance**       | 0.630     | 0.731            |
-| **Stroke n-gram similarity**   | 0.689     | 0.731            |
-| **SelfSup Visual Linking**             | 0.769     | 0.769            |
-| **SelfSup Language Linking**           | 0.740     | 0.790            |
-| **SelfSup Multimodal Linking**         | 0.845     | 0.849            |
-| **Sup Visual Linking**             | 0.878     | 0.878            |
-| **Sup Visual Linking**             | 0.924     | 0.924            |
-| **Sup Language Linking**           | 0.790     | 0.882            |
-| **Sup Multimodal Linking**         | 0.937     | 0.945            |
+|                                | **Noisy OCR** | **Clean OCR**    |
+|--------------------------------|---------------|------------------|
+| **Levenshtein distance**       | 0.630         | 0.731            |
+| **Stroke n-gram similarity**   | 0.689         | 0.731            |
+| **SelfSup Visual Linking**     | 0.769         | 0.769            |
+| **SelfSup Language Linking**   | 0.740         | 0.790            |
+| **SelfSup Multimodal Linking** | 0.845         | 0.849            |
+| **Sup Visual Linking**         | 0.878         | 0.878            |
+| **Sup Visual Linking**         | 0.924         | 0.924            |
+| **Sup Language Linking**       | 0.790         | 0.882            |
+| **Sup Multimodal Linking**     | 0.937         | 0.945            |
 
+Run the following file:
 ```
-bash
+results_replication.sh
 ```
