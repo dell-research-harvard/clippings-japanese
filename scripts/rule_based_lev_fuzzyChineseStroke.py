@@ -1,5 +1,6 @@
 # %%
 # Import dependencies 
+from multiprocessing.spawn import import_main_path
 import time
 import json
 from glob import glob
@@ -16,8 +17,12 @@ from itertools import repeat
 from fuzzychinese import FuzzyChineseMatch
 import matplotlib.pyplot as plt
 import textdistance as td
-from ..utils.nomatch_accuracy import calculate_nomatch_accuracy
-from ..utils.matched_accuracy import calculate_matched_accuracy
+import sys
+
+sys.path.append("..")
+
+from utils.nomatch_accuracy import calculate_nomatch_accuracy
+from utils.matched_accuracy import calculate_matched_accuracy
 
 # %%
 def list_lev(word,list2):
@@ -54,10 +59,10 @@ def list_fuzzyChinese(raw_word,test_dict, title_dict, task_name):# raw_word is t
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--partner_csv", type=str, #/mnt/data01/yxm/homo/homo_match_dataset/japan
-        default="/mnt/data01/yxm/record_linkage_clean_dataset/ocr_json/partner_list_clean_final_eff_gcv_paddle_easy.csv",# let's use csv 
+        default="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/partner_list_clean_final_eff_gcv_paddle_easy.csv",# let's use csv 
         help="Path to Partners list")
     parser.add_argument("--json_path", type=str,
-        default='/mnt/data01/yxm/record_linkage_clean_dataset/ocr_json')# This is the path to things on Guppy
+        default='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json')# This is the path to things on Guppy
     parser.add_argument("--match_task", type=list, # You can change the task as you wantf the gcv is already gcv
         default=[# TK task# Please update the GCV titles list - also make to no dup...
         ['gcv_2_gcvtk','gcv_ocr_partner','gcv_tk_title_dup_68352_clean_path.json','cjk'], 
@@ -82,6 +87,8 @@ if __name__ == "__main__":
     list 1 is the source
     list 2 is what we parallize on since it is vert long
     '''
+    accuracy_dict = {}
+
     store_time = {}
     # Run the matching if do_match is True
     for task_name, partner_ocr_choice, title, homo_type in tqdm(match_task):
@@ -109,15 +116,27 @@ if __name__ == "__main__":
                 f'lev_{task_name}_matched_path_1': path_list})
 
             df_matched = pd.concat([df_match_result,partner_csv], axis=1)
+
+            df_matched["matched_tk_path"] = df_matched[f"lev_{task_name}_matched_path_1"]
             df_matched.to_csv(os.path.join(args.save_output,f'df_full_matched_{task_name}_lev.csv'))
+
+            accuracy_dict[f"{task_name}_lev_match"] = calculate_matched_accuracy(match_results = df_matched)
 
             print('matched test accuracy:', calculate_matched_accuracy(match_results = df_matched))
 
+            '''
+            From a file storing the best threshold
+            '''
             if "gcv" in task_name:
-                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, best_no_match_thresh = 1.5365, levenshtein_match = True))
+                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_gcv_2_gcvtk_lev.csv", levenshtein_match = True))
+                accuracy_dict[f"{task_name}_lev_nomatch"] = calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_gcv_2_gcvtk_lev.csv", levenshtein_match = True)
+     
             else:        
-                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, best_no_match_thresh = 1.5461, levenshtein_match = True))
+                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_eff_2_efftk_lev.csv", levenshtein_match = True))
+                accuracy_dict[f"{task_name}_lev_nomatch"] = calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_eff_2_efftk_lev.csv", levenshtein_match = True)
 
+            with open('/mnt/data01/yxm/accuracy_check.json','w') as f:
+                json.dump(accuracy_dict,f,ensure_ascii=False)
 
         if args.fuzzychinese_stroke:
             raw_word = partner_list_for_match # This is the for matching
@@ -145,13 +164,20 @@ if __name__ == "__main__":
             # df_matched.to_csv(os.path.join(args.save_output,f'matched.csv'))
             df_match_result.reset_index(drop = True,inplace = True)
             df_matched = pd.concat([df_match_result,partner_csv],axis=1)
+
+            df_matched["matched_tk_path"] = df_matched[f"fuzzychinese_stroke_{task_name}_matched_path_1"]
             df_matched.to_csv(os.path.join(args.save_output,f'df_full_matched_{task_name}_fuzzychinese.csv'))
 
             print('matched test accuracy:', calculate_matched_accuracy(match_results = df_matched))
 
+            accuracy_dict[f"{task_name}_stroke_match"] = calculate_matched_accuracy(match_results = df_matched)
+
             if "gcv" in task_name:
-                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, best_no_match_thresh = 0.82, levenshtein_match = False))
+                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv", levenshtein_match = False))
+                accuracy_dict[f"{task_name}_stroke_nomatch"] = calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_gcv_2_gcvtk_fuzzychinese_stroke.csv", levenshtein_match = False)
             else:        
-                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, best_no_match_thresh = 0.82, levenshtein_match = False))
-
-
+                print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv", levenshtein_match = False))
+                accuracy_dict[f"{task_name}_stroke_nomatch"] = calculate_nomatch_accuracy(match_results = df_matched, file_name = "df_full_matched_eff_2_efftk_fuzzychinese_stroke.csv", levenshtein_match = False)
+            
+            with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/accuracy_check.json','w') as f:
+                json.dump(accuracy_dict,f,ensure_ascii=False)
