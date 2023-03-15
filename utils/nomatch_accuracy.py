@@ -54,7 +54,7 @@ def match_result(file_name): # The what should be named as task, which is better
     test_accuracy = df_test["accuracy"].mean()
     return [random_best,val_accuracy,test_accuracy]
 
-def calculate_nomatch_accuracy(match_results = 'DATAFRAME', file_name = 'mean_norm_1_effocr_partner_tk_match.csv', levenshtein_match = False):
+def calculate_nomatch_accuracy(matched_results = 'DATAFRAME', file_name = 'mean_norm_1_effocr_partner_tk_match.csv', levenshtein_match = False):
     with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/nomatch_thresh.json') as f:
         nomatch_thresh = json.load(f)
     with open("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ground_truth/truth_TK_partnerpath_2_titlepath_0314.json") as f:
