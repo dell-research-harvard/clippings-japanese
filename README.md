@@ -154,11 +154,11 @@ Refer to docs/synthetic_data_generation.md for details
 
 ### Replication of main results
 
-| ****                           | **Noisy** | **Clean**      |
+|                                | **Noisy** | **Clean**      |
 |--------------------------------|-----------|----------------|
-| ****                           | OCR       | OCR            |
+|                                | OCR       | OCR            |
 | **Levenshtein distance**       | 0.630     | 0.731          |
-| **Stroke $n$-gram similarity** | 0.689     | 0.731          |
+| **Stroke n-gram similarity** | 0.689     | 0.731          |
 | **Visual Linking**             | 0.769     | 0.769          |
 | **Language Linking**           | 0.740     | 0.790          |
 | **Multimodal Linking**         | 0.845     | 0.849          |
