@@ -24,11 +24,11 @@ def convert_to_text(unicode_string):
 
 
 def prepare_data(
-    ground_truth_pr_tk="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/TK_matched_1207_appended.csv",
-    ground_truth_pr_pr="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/PR_matched_1092_appended.csv",
-    pr_partners_data="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json",
-    tk_data="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_tk_title_dup_68352_clean_path.json",
-    pr_title_data="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_title_updated.json",
+    ground_truth_pr_tk="/path/to/data/matched/TK_matched_1207_appended.csv",
+    ground_truth_pr_pr="/path/to/data/matched/PR_matched_1092_appended.csv",
+    pr_partners_data="/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json",
+    tk_data="/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_tk_title_dup_68352_clean_path.json",
+    pr_title_data="/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_pr_title_updated.json",
     output_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/PR_TK_matched_ocr.csv'
 ):
      ###Import the labelled data df
@@ -378,10 +378,10 @@ def make_data_with_hardnegs(
     return df
 
 
-def prep_synthetic_data(input_path_list=["/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/ocr-as-retrieval/misc/multimodal_synth_0217/dataframes/Jake_noise/filled_noisy_2_ocr_ground_truth.csv",
-                                         "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/ocr-as-retrieval/misc/multimodal_synth_0217/dataframes_0228/Jake_noise/filled_noisy_2_ocr_ground_truth.csv",
-                                         "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/ocr-as-retrieval/misc/multimodal_synth_0217/dataframes/Ab_noise/filled_noisy_2_ocr_ground_truth.csv"],
-                        output_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/multimodal_data/multimodal_synth_data.csv",
+def prep_synthetic_data(input_path_list=["/path/to/data/ocr-as-retrieval/misc/multimodal_synth_0217/dataframes/noise_v1/filled_noisy_2_ocr_ground_truth.csv",
+                                         "/path/to/data/ocr-as-retrieval/misc/multimodal_synth_0217/dataframes_0228/noise_v1/filled_noisy_2_ocr_ground_truth.csv",
+                                         "/path/to/data/ocr-as-retrieval/misc/multimodal_synth_0217/dataframes/noise_v2/filled_noisy_2_ocr_ground_truth.csv"],
+                        output_path="/path/to/data/multimodal_data/multimodal_synth_data.csv",
                         drop_prop=0.9):
     """Prepare the synthetic data"""
     ###Load the synthetic data from the list and concatenate them
@@ -441,18 +441,18 @@ def prep_synthetic_data(input_path_list=["/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a
     train_data, test_data = train_test_split(synthetic_data, test_size=0.2, random_state=42, stratify=synthetic_data['label'])
 
     ###Save the train and test data
-    train_data.to_csv("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/multimodal_data/multimodal_synth_train_data.csv", index=False,encoding='utf-8-sig')
-    test_data.to_csv("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/multimodal_data/multimodal_synth_test_data.csv", index=False,encoding='utf-8-sig')
+    train_data.to_csv("/path/to/data/multimodal_data/multimodal_synth_train_data.csv", index=False,encoding='utf-8-sig')
+    test_data.to_csv("/path/to/data/multimodal_data/multimodal_synth_test_data.csv", index=False,encoding='utf-8-sig')
 
     print("Final length of the train data:",len(train_data))
 
     return synthetic_data,train_data,test_data
 
 
-def make_synthetic_ref_data(output_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/multimodal_data/multimodal_synth_ref_data.csv"):
+def make_synthetic_ref_data(output_path="/path/to/data/multimodal_data/multimodal_synth_ref_data.csv"):
     """Make a reference dataset for the synthetic data"""
     ###Load the synthetic data
-    synthetic_data=pd.read_csv("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/multimodal_data/multimodal_synth_data.csv")
+    synthetic_data=pd.read_csv("/path/to/data/multimodal_data/multimodal_synth_data.csv")
 
     ###Make a reference dataset
     ref_data=synthetic_data.drop_duplicates(subset=['label'],keep='first')

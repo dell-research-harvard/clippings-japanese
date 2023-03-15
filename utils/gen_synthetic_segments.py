@@ -4,7 +4,6 @@ import numpy as np
 from torchvision import transforms as T
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 import albumentations as A
-from albumentations.pytorch import ToTensorV2
 import random
 from tqdm import tqdm
 from glob import glob
@@ -110,11 +109,11 @@ def create_synthetic_images(im_subfolder_path,save_dir,image_count):
 
 
 
-##Run as script
+##Run as script (test)
 if __name__ == "__main__":
 
-    clean_images_dir= "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_cjk/images"
-    noisy_dir = "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_cjk/noisy_images"
+    clean_images_dir= "/path/to/data/word_dump_cjk/images"
+    noisy_dir = "/path/to/data/word_dump_cjk/noisy_images"
     image_count = 20
 
     ##Create save dir if it doesn't exist

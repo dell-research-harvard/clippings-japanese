@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
 
     #Path = the file "matched_ab_filtered.xlsx" in the same folder as this script
-    path = os.path.join(os.getcwd(), 'gcv_2_gcvtk_lev_1_31861.csv')
+    path = os.path.join(os.getcwd(), '/path/to/noisyocr/df/gcv_2_gcvtk_lev_1_31861.csv')
     df = pd.read_csv(path)
 
     df=preprocess_df(df,'partner_main_title','partner_type','lev_gcv_2_gcvtk_matched_word_1')

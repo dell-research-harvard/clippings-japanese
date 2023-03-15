@@ -55,17 +55,17 @@ def match_result(file_name): # The what should be named as task, which is better
     return [random_best,val_accuracy,test_accuracy]
 
 def calculate_nomatch_accuracy(matched_results = 'DATAFRAME', file_name = 'mean_norm_1_effocr_partner_tk_match.csv', levenshtein_match = False):
-    with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/nomatch_thresh.json') as f:
+    with open('/path/to/data/record_linkage_clean_dataset/nomatch_thresh.json') as f:
         nomatch_thresh = json.load(f)
-    with open("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ground_truth/truth_TK_partnerpath_2_titlepath_0314.json") as f:
+    with open("/path/to/data/record_linkage_clean_dataset/ground_truth/truth_TK_partnerpath_2_titlepath_0314.json") as f:
         truth_TK_partnerpath_2_titlepath = json.load(f)
 
     matched_results["TK_truth_image"] = matched_results.apply(lambda x:truth_TK_partnerpath_2_titlepath[x["source"]] if x["source"] in truth_TK_partnerpath_2_titlepath else [-9], axis=1)
     # Clean this to a list
-    with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_code/new_subset/val_list_0314_v1.json') as f:
+    with open('/path/to/data/record_linkage_clean_code/new_subset/val_list_0314_v1.json') as f:
         nomatch_val_subset = json.load(f)
 
-    with open('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_code/new_subset/test_list_0314_v1.json') as f:
+    with open('/path/to/data/record_linkage_clean_code/new_subset/test_list_0314_v1.json') as f:
         nomatch_test_subset = json.load(f)
 
     df_val = matched_results[matched_results["source"].isin(nomatch_val_subset)]

@@ -27,7 +27,7 @@ def convert_to_text(unicode_string):
     return unicode_string.encode('ascii','ignore').decode('ascii')
 
 
-def get_tk_universe(tk_data_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_tk_title_dup_68352_clean_path.json'):
+def get_tk_universe(tk_data_path='/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_tk_title_dup_68352_clean_path.json'):
     """Get the universe of vertical japanese text crops + ocr text from the tk dataset"""
     
     with open(tk_data_path) as f:
@@ -45,7 +45,7 @@ def get_tk_universe(tk_data_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/
 
     return tk_data_df
 
-def get_pr_title_universe(pr_title_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_title_updated.json"):
+def get_pr_title_universe(pr_title_path="/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_pr_title_updated.json"):
     """Get the universe of japanese text crops + ocr text from the pr dataset"""
     
     with open(pr_title_path) as f:
@@ -65,7 +65,7 @@ def get_pr_title_universe(pr_title_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a1
 
     return pr_title_data_df
 
-def get_pr_partner_universe(pr_partner_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json"):
+def get_pr_partner_universe(pr_partner_path="/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json"):
     """Get the horizontal of vertical japanese text crops from the pr dataset"""
         
     with open(pr_partner_path) as f:
@@ -82,7 +82,7 @@ def get_pr_partner_universe(pr_partner_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4
 
     return pr_partner_data_df
 
-def get_pr_partner_test_data(test_data_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/PR_TK_matched_ocr_only_test.csv"):
+def get_pr_partner_test_data(test_data_path="/path/to/data/mm_dir/PR_TK_matched_ocr_only_test.csv"):
     """Get the test data for the pr partner - tk dataset"""
     test_data = pd.read_csv(test_data_path)
     ###Drop duplicates by image_path and text
@@ -132,8 +132,8 @@ def eval_clip(val_loader,model,tokenizer):
 
 
 
-def prep_labelled_data(data_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/PR_TK_matched_ocr_only_train.csv",
-                       val_data="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/PR_TK_matched_ocr_only_val.csv"):
+def prep_labelled_data(data_path="/path/to/data/mm_dir/PR_TK_matched_ocr_only_train.csv",
+                       val_data="/path/to/data/mm_dir/PR_TK_matched_ocr_only_val.csv"):
         """Prepare the labelled data for the PR-TK dataset. The data was preprocessed outside of this script."""
      ####Load the image+text paired data (CSV)
         
@@ -156,7 +156,7 @@ def prep_labelled_data(data_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deep
         return train_data,val_data,data
 
 
-def prep_synth_data(data_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/multimodal_data/multimodal_synth_train_data.csv"):
+def prep_synth_data(data_path="/path/to/datamultimodal_data/multimodal_synth_train_data.csv"):
         """Prepare the synthetic data. The data was preprocessed outside of this script."""
         ####Load the image+text paired data (CSV)
         data=pd.read_csv(data_path)
@@ -191,9 +191,9 @@ def prep_synth_data(data_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleO
 
 
 
-def prep_unlabelled_data(tk_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/ocr_dataframes_multimodal/EffOCR/tk_image_ocr.csv",
-                         pr_title_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/ocr_dataframes_multimodal/EffOCR/pr_image_ocr.csv',
-                         pr_partner_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/ocr_dataframes_multimodal/EffOCR/partners_image_ocr.csv'):
+def prep_unlabelled_data(tk_path="/path/to/data/ocr_dataframes_multimodal/EffOCR/tk_image_ocr.csv",
+                         pr_title_path='/path/to/data/ocr_dataframes_multimodal/EffOCR/pr_image_ocr.csv',
+                         pr_partner_path='/path/to/data/ocr_dataframes_multimodal/EffOCR/partners_image_ocr.csv'):
     """Prep the unlabelled data for training. The data was preprocessed outside of this script."""
     ##Load the data
     tk_data=pd.read_csv(tk_path)
@@ -758,17 +758,17 @@ if __name__ == "__main__":
 
             if val_loss<zero_shot_loss:
                 zero_shot_loss=val_loss
-                torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",args.wandb_name+".pt"))
+                torch.save(clip_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",args.wandb_name+".pt"))
                 
                 print("Model saved at epoch {}".format(epoch))
-                print("Path of the saved model: {}".format(os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",args.wandb_name+".pt")))
-                print("Path of the saved model: {}".format(os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("epoch_"+str(epoch)+"_"+args.wandb_name+".pt"))))
+                print("Path of the saved model: {}".format(os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",args.wandb_name+".pt")))
+                print("Path of the saved model: {}".format(os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("epoch_"+str(epoch)+"_"+args.wandb_name+".pt"))))
                 print("Val loss: {}".format(val_loss))
                 if val_loss<0.1:
                     ###Look at final acc on tk
                     final_acc=tester_bienc_clip(test_loader,small_ref_loader,clip_model,split="test",log=True)
                     print("Final acc on test set: {}".format(final_acc))
-            torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("epoch_"+str(epoch)+args.wandb_name+".pt")))
+            torch.save(clip_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("epoch_"+str(epoch)+args.wandb_name+".pt")))
 
 
     elif args.training_type=="train_bienc" and args.train_data_type=="labelled":
@@ -780,26 +780,26 @@ if __name__ == "__main__":
                     freeze_clip=True
                 else:
                     freeze_clip=False
-                epoch_loss=train_bienc_clip(train_loader,clip_model,device,loss_func,epoch,clip_optimizer,clip_scheduler=clip_scheduler,epochviz="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz",tokenizer=tokenizer,mlp_model=mlp_model,mlp_optimizer=mlp_optimizer,mlp_scheduler=mlp_scheduler,freeze_clip=freeze_clip)
+                epoch_loss=train_bienc_clip(train_loader,clip_model,device,loss_func,epoch,clip_optimizer,clip_scheduler=clip_scheduler,epochviz="/path/to/japan_viz/epoch_viz",tokenizer=tokenizer,mlp_model=mlp_model,mlp_optimizer=mlp_optimizer,mlp_scheduler=mlp_scheduler,freeze_clip=freeze_clip)
             else:
                 freeze_clip=False
-                epoch_loss=train_bienc_clip(train_loader,clip_model,device,loss_func,epoch,clip_optimizer,clip_scheduler=clip_scheduler,epochviz="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_vit/epoch_viz",tokenizer=tokenizer,mlp_model=mlp_model,mlp_optimizer=mlp_optimizer,mlp_scheduler=mlp_scheduler,freeze_clip=freeze_clip)
+                epoch_loss=train_bienc_clip(train_loader,clip_model,device,loss_func,epoch,clip_optimizer,clip_scheduler=clip_scheduler,epochviz="/path/to/japan_viz/epoch_viz",tokenizer=tokenizer,mlp_model=mlp_model,mlp_optimizer=mlp_optimizer,mlp_scheduler=mlp_scheduler,freeze_clip=freeze_clip)
             if epoch>15:
                 acc=tester_bienc_clip(val_loader,huge_ref_loader,clip_model,mlp_model,split="val_huge",log=True)
             else:
                 acc=tester_bienc_clip(val_loader,large_ref_loader,clip_model,mlp_model,split="val_large",log=True)
             if acc>best_acc:
                 best_acc=acc
-                torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
+                torch.save(clip_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
                 print("Model saved at epoch {}".format(epoch))
-                print("Path of the saved model: {}".format(os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt"))))
+                print("Path of the saved model: {}".format(os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt"))))
                 if args.pooling_type=="mlp":
-                    torch.save(mlp_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("mlp_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
+                    torch.save(mlp_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("mlp_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
                 print("Model saved at epoch {}".format(epoch))
                     ###Look at final acc on tk
         final_acc=tester_bienc_clip(test_loader,small_ref_loader,clip_model,mlp_model,split="test",log=True)
             ###SAve at every epoch
-            # torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
+            # torch.save(clip_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
     
     elif args.training_type=="train_bienc" and args.train_data_type!="labelled":
         best_acc=tester_bienc_clip(val_loader,synth_ref_dataloader,clip_model,mlp_model,split="val_small",log=True)
@@ -809,16 +809,16 @@ if __name__ == "__main__":
             acc=tester_bienc_clip(val_loader,large_synth_ref_dataloader,clip_model,mlp_model,split="val_large",log=True)
             if acc>best_acc:
                 best_acc=acc
-                torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",args.wandb_name+".pt"))
+                torch.save(clip_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",args.wandb_name+".pt"))
                 print("Model saved at epoch {}".format(epoch))
-                print("Path of the saved model: {}".format(os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",args.wandb_name+".pt")))
+                print("Path of the saved model: {}".format(os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",args.wandb_name+".pt")))
                 if args.pooling_type=="mlp":
-                    torch.save(mlp_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("mlp_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
+                    torch.save(mlp_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("mlp_imwt_"+str(args.im_wt)[2]+args.wandb_name+".pt")))
                 print("Model saved at epoch {}".format(epoch))
                 ###Look at final acc on tk
         final_acc=tester_bienc_clip(test_loader,all_tk_ref_loader,clip_model,mlp_model,split="test",log=True)
             ###SAve at every epoch
-            # torch.save(clip_model.state_dict(), os.path.join("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/multimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
+            # torch.save(clip_model.state_dict(), os.path.join("/path/to/save/modelmultimodal_record_linkage/models/",("clip_imwt_"+str(args.im_wt)[2]+"epoch_"+str(epoch)+args.wandb_name+".pt")))
     
     else :
         print("Training type not recognised")

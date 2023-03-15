@@ -14,7 +14,7 @@ def get_base_name(path):
 ##Run as script
 if __name__ == '__main__':
 
-    pr_data="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json"
+    pr_data="/path/to/data/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json"
     with open(pr_data) as f:
             pr_data = json.load(f)
     pr_partner_paths=[path for path in pr_data.keys()]
@@ -29,20 +29,20 @@ if __name__ == '__main__':
     datasets_to_choose="both"
     # pr_df = pd.read_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_pr_tk_v2/PR_matched.csv')
     # tk_df = pd.read_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_pr_tk_v2/TK_matched.csv')
-    pr_df = pd.read_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/PR_matched_1092_appended.csv')
+    pr_df = pd.read_csv('/path/to/data/labelled_data/matched/PR_matched_1092_appended.csv')
 
     ##Merge ocr df
     
     ##More labels
-    # pr_more_df=pd.read_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/PR_match_more.csv')
+    # pr_more_df=pd.read_csv('/path/to/data/labelled_data/matched/PR_match_more.csv')
 
     ###concat the two dfs
     # pr_df = pd.concat([pr_df,pr_more_df],axis=0)
     pr_df = pd.merge(pr_df,partner_df_ocr,on='source',how='left')
 
-    tk_df = pd.read_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/TK_matched_1207_appended.csv')
+    tk_df = pd.read_csv('/path/to/data/labelled_data/matched/TK_matched_1207_appended.csv')
     ##Merge ocr df
-    # tk_more_df=pd.read_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/TK_match_more.csv')
+    # tk_more_df=pd.read_csv('/path/to/data/labelled_data/matched/TK_match_more.csv')
     # tk_df = pd.concat([tk_df,tk_more_df],axis=0)
     
     tk_df = pd.merge(tk_df,partner_df_ocr,on='source',how='left')
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     ###Add other variants
     # ##Other variant folder
-    # other_var_folder="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/source_target/training_data/*"
+    # other_var_folder="/path/to/data/source_target/training_data/*"
     # other_var_list=glob(other_var_folder) 
 
     # ###Load all df in the folder
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
         ##SAve the csv
 
-        stacked_df_sources_cross.to_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/stacked_df_sources_cross.csv',index=False)
+        stacked_df_sources_cross.to_csv('/path/to/data/labelled_data/matched/stacked_df_sources_cross.csv',index=False)
 
         ##Merge the two dfs
         stacked_df = pd.merge(stacked_df_targets,stacked_df_sources,on='source_ocr_text',how='left')
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
 
         # ##Save the df
-        stacked_df.to_csv('/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/PR_TK_stacked_df.csv',index=False,encoding='utf-8-sig')
+        stacked_df.to_csv('/path/to/data/labelled_data/matched/PR_TK_stacked_df.csv',index=False,encoding='utf-8-sig')
 
 
 
@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
     ###Save path
     # save_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_pr_tk_synth/images/'
-    save_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/images/'
+    save_path='/path/to/data/vision_dir/vision_ft_corr_val/images/'
     
     ##Rm the save path if it exists
     if os.path.exists(save_path):
@@ -244,7 +244,7 @@ if __name__ == '__main__':
 
 
     # save_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/PaddleOCR_testing/Paddle_test_images/japan_pr_tk_synth/splits/"
-    save_path = "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/"
+    save_path = "/path/to/data/vision_dir/vision_ft_corr_val/splits/"
     ###Make the folder if it doesn't exist
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -284,7 +284,7 @@ if __name__ == '__main__':
 
     val_dict = {"images":val_list}
 
-    save_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/"
+    save_path="/path/to/data/vision_dir/vision_ft_corr_val/splits/"
 
     ###Make the folder if it doesn't exist
     if not os.path.exists(save_path):
@@ -306,7 +306,7 @@ if __name__ == '__main__':
 
 ###ADd no match splits
 ###First add nomatch to the test and val paths
-    no_match_data_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/nomatch/TK_nomatch_781.csv"
+    no_match_data_path="/path/to/data/labelled_data/nomatch/TK_nomatch_781.csv"
     no_match_df = pd.read_csv(no_match_data_path)
     no_match_df = no_match_df.dropna()
     no_match_df = no_match_df.reset_index(drop=True)
@@ -384,7 +384,7 @@ if __name__ == '__main__':
 
     
     ###Make a folder with only training images
-    train_images_folder="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/train_images/"
+    train_images_folder="/path/to/data/vision_dir/vision_ft_corr_val/splits/train_images/"
     
     ##Remove the folder if it exists
     if os.path.exists(train_images_folder):
@@ -399,7 +399,7 @@ if __name__ == '__main__':
 
 
     ###Make a folder with only one image from each folder in training images
-    single_train_images_folder="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/vision_dir/vision_ft_corr_val/splits/single_train_images/"
+    single_train_images_folder="/path/to/data/vision_dir/vision_ft_corr_val/splits/single_train_images/"
     
     if os.path.exists(single_train_images_folder):
         os.system("rm -r {}".format(single_train_images_folder))

@@ -280,14 +280,14 @@ if __name__ == '__main__':
 
     # Change the path to CGIS
     
-    save_path = '/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_60000/'
+    save_path = '/path/to/data/word_dump_centered_japan_places_60000/'
     ##Create folder if not exist
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     
     # Change: please change the font paths to all available CJK font paths. Put everything in here, and also need to SCP these files to CGIS
-    # font_paths = glob("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/CJK_fonts/*.ttf")    
-    font_paths = glob("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/visual_record_linkage/japan_font_files/*.ttf")
+    # font_paths = glob("/path/to/data/CJK_fonts/*.ttf")    
+    font_paths = glob("/path/to/data/visual_record_linkage/japan_font_files/*.ttf")
     char_list = []
     for font_path in tqdm(font_paths):
         font_path=font_path.replace("\\","/")

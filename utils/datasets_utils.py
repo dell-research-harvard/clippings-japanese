@@ -2,11 +2,7 @@ import os
 from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 from torchvision import transforms as T
-import torch
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-import albumentations as A
-import kornia
-from albumentations.pytorch import ToTensorV2
 import utils.gen_synthetic_segments as gss
 import glob 
 
@@ -126,14 +122,14 @@ if __name__ == "__main__":
 
 
     ###Test the output of the transforms!
-    save_dir= "/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_japan_centered_3000/trans_images"
+    save_dir= "/path/to/data/word_dump_japan_centered_3000/trans_images"
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
     counter=0
 
-    img_list = glob.glob("/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_japan_centered_3000/images/*/*.png")
+    img_list = glob.glob("/path/to/data/word_dump_japan_centered_3000/images/*/*.png")
     for i, img_path in enumerate(img_list):
         ##open image
         print(i, img_path)
