@@ -20,6 +20,8 @@ import argparse
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+from utils.matched_accuracy import calculate_matched_accuracy
+from utils.nomatch_accuracy import calculate_nomatch_accuracy
 
 
 def convert_to_text(unicode_string):
@@ -270,8 +272,6 @@ def get_matches_using_faiss(clipping_rl_output_dict,output_df_path="/mnt/122a768
         # D=D.cpu().numpy()
         # I=I.cpu().numpy()
 
-    
-
     else:
         index = faiss.IndexFlatIP(test_embeddings.shape[1])
         index.add(tk_universe_embeddings.cpu().numpy())
@@ -297,56 +297,6 @@ def get_matches_using_faiss(clipping_rl_output_dict,output_df_path="/mnt/122a768
 
     return test_tk_match 
 
-
-def calculate_match_accuracy(test_match_df,
-                             ground_truth_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/TK_matched_1207_appended.csv",
-                             incorrect_match_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/incorrect_matches.csv"):
-
-    ###Now merge with test data
-    ground_truth=pd.read_csv(ground_truth_path)
-
-    ###Now merge with ground truth on source
-    test_tk_match=pd.merge(test_match_df,ground_truth,on="source",how="left")
-
-
-
-    ##Now calculate accuracy if matched_tk_path is same as target
-    test_tk_match["accuracy"]=test_tk_match.apply(lambda x: 1 if x["matched_tk_path"]==x["target"] else 0,axis=1)
-
-    print(test_tk_match.head(5))
-
-    print("Accuracy: {}".format(test_tk_match["accuracy"].sum()/len(test_tk_match)))
-
-    incorrect_match_df=test_tk_match[test_tk_match["accuracy"]==0]
-
-    ###
-    # incorrect_matches_chunks=[incorrect_match_df[i:i+5] for i in range(0,incorrect_match_df.shape[0],5)]
-    ##Reset index
-    incorrect_match_df=incorrect_match_df.reset_index(drop=True)
-
-
-
-    incorrect_matches_chunks=[incorrect_match_df.filter(items=range(i,i+5),axis=0) for i in range(0,incorrect_match_df.shape[0],5) ]
-    
-    ##IF a chunk is of length 1, then append a row of all NaNs = columns of incorrect_match_df
-    for i in range(len(incorrect_matches_chunks)):
-        if incorrect_matches_chunks[i].shape[0]==1:
-            incorrect_matches_chunks[i]=incorrect_matches_chunks[i].append(pd.DataFrame(np.nan, index=[0], columns=incorrect_match_df.columns))
-
-        
-  
-    ##Save incorrect match_Df
-    ##REname some columns and drop some
-    ###Keep only source,matched_tk_path,target,label
-    incorrect_match_df=incorrect_match_df[["source","matched_tk_path","target"]]
-    incorrect_match_df.columns=["source","target_matched","target"]
-    incorrect_match_df.to_csv(incorrect_match_path,index=False,encoding="utf-8-sig")
-
-
-    return incorrect_matches_chunks
-
-
-
 def get_accuracy_with_no_match(test_match_df,
                              ground_truth_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/TK_matched_1207_appended.csv",
                              threshold=0.5):
@@ -366,43 +316,6 @@ def get_accuracy_with_no_match(test_match_df,
     print("Accuracy: {}".format(test_tk_match["accuracy"].sum()/adjusted_denominator))
 
     return test_tk_match
-
-
-
-    
-
-
-
-
-    
-def visualize_incorrect_matches(incorrect_matches_df_chunk,c_num=0,img_prefix=""):
-    c_num=str(c_num)
-##Visualize the incorrect matches using plt and Image. Also print the distance
-    fig, ax = plt.subplots(len(incorrect_matches_df_chunk), 3, figsize=(20, 20))
-    print(len(incorrect_matches_df_chunk["source"].unique()))
-    for i,img_name in enumerate(incorrect_matches_df_chunk["source"].unique()):
-        ##If the image name is nan, then skip
-        if type(img_name)!=str:
-            continue
-        img = Image.open(img_name)
-        ax[i,0].imshow(img)
-        ax[i,0].axis('off')
-        # ax[i,0].set_title("Source")
-        img = Image.open(incorrect_matches_df_chunk[incorrect_matches_df_chunk["source"]==img_name]["target"].iloc[0])
-        ax[i,1].imshow(img)
-        ax[i,1].axis('off')
-        # ax[i,1].set_title("Target")
-        img = Image.open(incorrect_matches_df_chunk[incorrect_matches_df_chunk["source"]==img_name]["matched_tk_path"].iloc[0])
-        ax[i,2].imshow(img)
-        ax[i,2].axis('off')
-        ###Also print the distance
-        ax[i,2].set_title("Distance: {}".format(incorrect_matches_df_chunk[incorrect_matches_df_chunk["source"]==img_name]["distance"].iloc[0]))
-
-
-    image_path=f'/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{img_prefix}_incorrect_matches_{c_num}.png'
-    ##Save the incorrect matches
-    plt.savefig(image_path,dpi=600)
-
 
 if __name__ == "__main__":
     import argparse
@@ -472,25 +385,10 @@ if __name__ == "__main__":
     ###Make the match df
     test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_test_tk_match.csv")
     
-    ###Get the incorrect matches and calulate accuracy
-    incorrect_matches_chunks=calculate_match_accuracy(test_match_df,
-                             ground_truth_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/labelled_data/matched/TK_matched_1207_appended.csv",
-                             incorrect_match_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_incorrect_matches.csv")
-    
-    ###Visualize incorrect matches
-    for i,incorrect_matches_chunk in enumerate(incorrect_matches_chunks):
-        visualize_incorrect_matches(incorrect_matches_chunk,c_num=i,img_prefix=args.output_prefix)
+    ###Report accuracy
+    print('matched test accuracy:', calculate_matched_accuracy(match_results = test_match_df))
 
-
-        
-
-
-
-        
-
-
-        
-
-
-
-
+    if args.ocr_result == "gcv":
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82, ))
+    else:        
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82))
