@@ -602,7 +602,7 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
 
     ## Calculate match, nomatch accuracy
     print('matched test accuracy:', calculate_matched_accuracy(matched_results = topk_bm_df))
-    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = topk_bm_df, file_name="top1_bm_df_all_data_formatted.csv", levenshtein_match = False))
+    print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = topk_bm_df, file_name="top1_bm_df_all_data_formatted_vit.csv", levenshtein_match = False))
 
 # Run as script
 if __name__ == "__main__":
