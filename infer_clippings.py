@@ -16,6 +16,7 @@ import json
 import faiss
 from timm.models import load_state_dict
 import argparse
+import copy
 
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -367,10 +368,11 @@ if __name__ == "__main__":
         test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=False)
     
     ## The test subset is already in the function
+    test_match_df_for_nomatch = copy.deepcopy(test_match_df)
     print('matched test accuracy:', calculate_matched_accuracy(matched_results = test_match_df))
 
     if args.ocr_result == "gcv":
-        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = test_match_df, file_name="mean_norm_1_gcv_partner_tk_match.csv", levenshtein_match = False))
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = test_match_df_for_nomatch, file_name="mean_norm_1_gcv_partner_tk_match.csv", levenshtein_match = False))
     else:        
-        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = test_match_df, file_name="mean_norm_1_effocr_partner_tk_match.csv", levenshtein_match = False))
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(matched_results = test_match_df_for_nomatch, file_name="mean_norm_1_effocr_partner_tk_match.csv", levenshtein_match = False))
 
