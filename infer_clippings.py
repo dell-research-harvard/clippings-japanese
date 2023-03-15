@@ -389,6 +389,7 @@ if __name__ == "__main__":
     print('matched test accuracy:', calculate_matched_accuracy(match_results = test_match_df))
 
     if args.ocr_result == "gcv":
-        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82, ))
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82, levenshtein_match = False))
     else:        
-        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82))
+        print('nomatch test accuracy using threshold finetuned on validation set:',calculate_nomatch_accuracy(match_results = test_match_df, best_no_match_thresh = 0.82, levenshtein_match = False))
+
