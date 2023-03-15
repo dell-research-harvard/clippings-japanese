@@ -158,13 +158,13 @@ Refer to docs/synthetic_data_generation.md for details
 |--------------------------------|-----------|------------------|
 | **Levenshtein distance**       | 0.630     | 0.731            |
 | **Stroke n-gram similarity**   | 0.689     | 0.731            |
-| **Visual Linking**             | 0.769     | 0.769            |
-| **Language Linking**           | 0.740     | 0.790            |
-| **Multimodal Linking**         | 0.845     | 0.849            |
-| **Visual Linking**             | 0.878     | 0.878            |
-| **Visual Linking**             | 0.924     | 0.924            |
-| **Language Linking**           | 0.790     | 0.882            |
-| **Multimodal Linking**         | 0.937     | 0.945            |
+| **SelfSup Visual Linking**             | 0.769     | 0.769            |
+| **SelfSup Language Linking**           | 0.740     | 0.790            |
+| **SelfSup Multimodal Linking**         | 0.845     | 0.849            |
+| **Sup Visual Linking**             | 0.878     | 0.878            |
+| **Sup Visual Linking**             | 0.924     | 0.924            |
+| **Sup Language Linking**           | 0.790     | 0.882            |
+| **Sup Multimodal Linking**         | 0.937     | 0.945            |
 
 ```
 bash
