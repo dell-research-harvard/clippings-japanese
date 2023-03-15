@@ -81,7 +81,7 @@ For image-only training, use im_wt = 1 and for language-only training, use im_wt
 #### Inference
 
 ``` 
-infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /path/to/multimodal_record_linkage/best_models/clip_imwt_5bienc_clip_pretrain_labelled_m3_v3_hardneg_norm_final.pt --ocr_result "effocr" 
+infer_clippings.py  --pooling_type "mean" --output_prefix mean_norm_1_effocr  --checkpoint_path /path/to/multimodal_record_linkage/best_models/clippings_model_image_only.pt --ocr_result "effocr" 
 ```
 --pooling_type can be either "mean", "text" or "image" and --ocr_result can be either "effocr" or "gcv". effocr corresponds to the "clean" ocr and "gcv" corresponds to the "noisy" ocr. 
 
@@ -131,7 +131,7 @@ With offline hard negative mining
 #### Inference
 
 ```
-python infer_vit.py --root_folder "/path/toPaddleOCR_testing/Paddle_test_images/japan_vit_all_infer_prtkfinal_synthonly" --timm_model vit_base_patch16_224.dino  --checkpoint_path "/path/todeeprecordlinkage/vision_dir/best_models/enc_best_e_ulti.pth" --recopy
+python infer_vit.py --root_folder "/path/toPaddleOCR_testing/Paddle_test_images/japan_vit_all_infer_prtkfinal_synthonly" --timm_model vit_base_patch16_224.dino  --checkpoint_path "/path/todeeprecordlinkage/vision_dir/best_models/best_vision_model.pth" --recopy
 
 ```
 
