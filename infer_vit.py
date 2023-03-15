@@ -669,21 +669,7 @@ def main(root_folder, model, trained_model_path , lang_code,wandb_log=False,tran
     bm_df.to_csv(df_path,index=False)
     ##Get output checks through images
 
-    print(bm_df.head(10))
-    print(bm_df["source"].tolist()[:0])
-    print(bm_df["target"].tolist()[:0])
 
-    
-    ##Visualize results
-    # viz_matches(bm_df,n=10,save_dir=output_check_dir)
-
-    # # ##Get topk best match df
-    # topk_bm_df=make_topk_match_df(source_image_paths,target_image_paths, indices,distances,1)
-
-    # ##Write df
-    # df_path=os.path.join(root_folder,"top1_bm_df_all_data.csv")
-
-    # topk_bm_df.to_csv(df_path,index=False)
 
     # ## Make top 10 match dict
     topk_bm_dict=fast_match_topk_dict(source_image_paths,target_image_paths, indices,distances,1)

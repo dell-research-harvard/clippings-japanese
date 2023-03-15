@@ -325,7 +325,6 @@ if __name__ == "__main__":
     parser.add_argument("--img_wt", type=float, default=0.5)
     parser.add_argument("--output_prefix", type=str, default="text_only")
     parser.add_argument("--split", type=str, default="test")
-    parser.add_argument("--infer_partnertk", action="store_true")
     parser.add_argument("--ocr_result", type=str, default="effocr")
     parser.add_argument("--use_gpu_faiss", action="store_true")
 
@@ -350,40 +349,37 @@ if __name__ == "__main__":
     model.to(device)
     tokenizer = ja_clip.load_tokenizer()
 
-    if args.infer_partnertk:
 
-        if args.ocr_result=="effocr":
-            pr_partner_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json"
-            tk_data_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_tk_title_dup_68352_clean_path.json'
-        elif args.ocr_result=="gcv":
-            pr_partner_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/gcv_pr_partner.json"
-            tk_data_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/gcv_tk_title_dup_68352_clean_path.json'
-           
-
-        partner_loader,tk_universe_loader=  prep_partner_tk_loaders(pr_partner_path,tk_data_path)
-        clippings_linkage_output=get_clipping_embeddings(partner_loader,tk_universe_loader,model,device,pooling_type=args.pooling_type,im_wt=args.img_wt)
-        ###Make the match df
-        if args.use_gpu_faiss:
-
-            test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=True)
-        else:
-            test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=False)
+    if args.ocr_result=="effocr": # dict of {path: ocr_text}
+        pr_partner_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_pr_partner.json"
+        tk_data_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/effocr_tk_title_dup_68352_clean_path.json'
+    elif args.ocr_result=="gcv":
+        pr_partner_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/gcv_pr_partner.json"
+        tk_data_path='/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/yxm/record_linkage_clean_dataset/ocr_json/gcv_tk_title_dup_68352_clean_path.json'
         
-        ##BReak the script here
-        print("Partner TK matches saved to disk. Exiting script")
-        exit()
 
-
-
-    ##Get test and universe loaders
-    test_data_loader,tk_universe_loader=prep_test_universe_data(ocr_tk_match_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/TK_matched_ocr_0303.csv",
-                            test_data_path=split_path)
-
-    ##Get clippings embeddings - clippings output dict
-    clippings_linkage_output=get_clipping_embeddings(test_data_loader,tk_universe_loader,model,device,pooling_type=args.pooling_type,im_wt=args.img_wt)
-
+    partner_loader,tk_universe_loader=  prep_partner_tk_loaders(pr_partner_path,tk_data_path)
+    clippings_linkage_output=get_clipping_embeddings(partner_loader,tk_universe_loader,model,device,pooling_type=args.pooling_type,im_wt=args.img_wt)
     ###Make the match df
-    test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_test_tk_match.csv")
+    if args.use_gpu_faiss:
+
+        test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=True)
+    else:
+        test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_partner_tk_match.csv",gpu_faiss=False)
+    
+
+
+
+
+    # ##Get test and universe loaders
+    # test_data_loader,tk_universe_loader=prep_test_universe_data(ocr_tk_match_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/TK_matched_ocr_0303.csv",
+    #                         test_data_path=split_path)
+
+    # ##Get clippings embeddings - clippings output dict
+    # clippings_linkage_output=get_clipping_embeddings(test_data_loader,tk_universe_loader,model,device,pooling_type=args.pooling_type,im_wt=args.img_wt)
+
+    # ###Make the match df
+    # test_match_df=get_matches_using_faiss(clippings_linkage_output,output_df_path=f"/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/deeprecordlinkage/mm_dir/{args.output_prefix}_test_tk_match.csv")
     
     ###Report accuracy
     print('matched test accuracy:', calculate_matched_accuracy(match_results = test_match_df))
