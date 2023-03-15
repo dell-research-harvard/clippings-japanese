@@ -10,7 +10,7 @@ import os
 
 if __name__ == "__main__":
 
-    data_dir="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_40000/images"
+    data_dir="/path/to/dataword_dump_centered_japan_places_40000/images"
 
     dataset_paths=glob(data_dir+"/*")
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     ###SAve to json
 
 
-    save_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_40000/splits"
+    save_path="/path/to/dataword_dump_centered_japan_places_40000/splits"
 
     ###Make the folder if it doesn't exist
     if not os.path.exists(save_path):
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
 
     ##Load train data anno 
-    train_anno_path="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_40000/splits/train.json"
+    train_anno_path="/path/to/dataword_dump_centered_japan_places_40000/splits/train.json"
     with open(train_anno_path) as f:
         train_anno = json.load(f)
 
@@ -93,9 +93,9 @@ if __name__ == "__main__":
 
     ###Clean image root
 
-    image_root="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_40000/images" 
+    image_root="/path/to/dataword_dump_centered_japan_places_40000/images" 
 
-    save_folder="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_40000/single_font_train"
+    save_folder="/path/to/dataword_dump_centered_japan_places_40000/single_font_train"
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
     ##GEnerate a folder with 1 image per word  -  for each folder, sort alphabetically and take only ones containing H.png
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         os.system("cp {} {}".format(image,save_path))
 
     ###Now similarly, randomly sample 1 image per word for these folders and take only ones containing H.png
-    save_folder="/mnt/122a7683-fa4b-45dd-9f13-b18cc4f4a187/homoglyphs/word_dump_centered_japan_places_40000/random_font_train"
+    save_folder="/path/to/dataword_dump_centered_japan_places_40000/random_font_train"
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
         
