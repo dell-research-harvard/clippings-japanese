@@ -139,7 +139,7 @@ python infer_vit.py --root_folder "/path/toPaddleOCR_testing/Paddle_test_images/
 ### Rule-based traditional Record-linkage baseline
 
 ```
-
+python scripts/rule_based_lev_fuzzyChineseStroke.py --lev --fuzzychinese_stroke --save_output ./rule_based_output
 ```
 
 
