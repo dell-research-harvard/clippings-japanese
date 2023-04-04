@@ -39,6 +39,9 @@ This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [mode
 
 - clippings_japanese.yml : The conda environment containing all dependencies
 
+## Model Zoo 
+(Coming soon)
+
 ## Code usage
 This section provides the commands (with relevant arguments) to replicate the results in the main paper. 
 
