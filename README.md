@@ -6,12 +6,6 @@ This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [mode
 ## Repo structure
 
 
-- sample_data : Contains sample data
-    -  source_images : directory containing source images
-    -  target images : directory containing target images
-    -  source_ocr_data.json  : {image:OCR_text}
-    -  target_ocr_data.json : {image:OCR_text}
-    -  ground_truth.csv : |source_path|target_path|
 
 - datasets
     - clippings_data_loaders.py : Contains the pytorch datasets, dataloaders and miners neccesary for training CLIPPINGS
@@ -29,8 +23,6 @@ This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [mode
     - gen_synthetic_dataset
         - create_font_image_folder.py
         - multimodal_synth_noise.py
-    - match_nomatch
-        - fill this up
     - vit_scripts (only listing important ones)
         - synth_line_H_V_skip_fonts_wordlist.py : Generate synthetic text redners using a word list
         - split_dataset.py : Split synthetically rendered data into train-val-test
@@ -38,18 +30,20 @@ This repo is for CLIPPINGS for record linkage (japanese). It uses the CLIP [mode
 - utils 
     - datasets_utils.py : Contains the main torchvision transformations needed to transform the images before feeding them into the model
     - gen_synthetic_segments : Some data augmentation functions to prepare random augmentations (Augmentations are only used in the ViT training and not the CLIPPINGS model)
+    - matched_accuracy.py : Functions to calculate match accuracy (main result in the paper)
+    - nomatch_accuracy.py : Functions to calculate no-match accuracy (supplementary table)
 
 - train_clippings.py : Script that supports both language-image pretraining of an underlying clip model as well as the main function to train "CLIPPINGS"
 
 - infer_clippings.py : Run inference to embed image-text pairs given model weights, perform SLINK, find the optimum threshold using the val set and present ARI for the test data
 
-- requirements.yaml : The conda environment containing all dependencies
+- clippings_japanese.yml : The conda environment containing all dependencies
 
 ## Code usage
 This section provides the commands (with relevant arguments) to replicate the results in the main paper. 
 
 ### CLIPPINGS
-Use relevant hyperparameters from Table X in the supplementary material file
+Use relevant hyperparameters from Table 1 in the supplementary material file
 
 #### Train 
 
